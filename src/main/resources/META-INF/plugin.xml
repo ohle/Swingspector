@@ -5,14 +5,12 @@
     <vendor>ohle</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.ohle.ideaswag.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.ohle.ideaswag.services.MyProjectService"/>
+        <configurationType implementation="com.github.ohle.ideaswag.SwagConfigurationType"/>
     </extensions>
 
     <applicationListeners>
-        <listener class="com.github.ohle.ideaswag.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
     </applicationListeners>
 </idea-plugin>
