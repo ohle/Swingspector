@@ -34,6 +34,10 @@ intellij {
     plugins.set(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
 }
 
+dependencies {
+    implementation(files("libs/swag-1.0.jar"))
+}
+
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
 changelog {
     version.set(properties("pluginVersion"))
