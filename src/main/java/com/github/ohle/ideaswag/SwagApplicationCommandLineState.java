@@ -59,7 +59,9 @@ public class SwagApplicationCommandLineState
                         }
                         if (!cancelled && !connected) {
                             connected =
-                                    SwagNotificationHandler.getInstance().startListeningTo(port);
+                                    SwagNotificationHandler.getInstance()
+                                            .startListeningTo(
+                                                    port, getConfiguration().getProject());
                             if (connected) {
                                 retryTimer.stop();
                             }

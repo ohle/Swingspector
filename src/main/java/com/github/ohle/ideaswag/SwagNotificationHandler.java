@@ -16,6 +16,7 @@ import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
 
 import de.eudaemon.swag.ComponentInfoMBean;
 
@@ -43,14 +44,14 @@ public class SwagNotificationHandler {
         return Holder.INSTANCE;
     }
 
-    public boolean startListeningTo(int port) {
+    public boolean startListeningTo(int port, Project project) {
         try {
             JMXConnector connector = JMXConnectorFactory.connect(constructURL(port));
             MBeanServerConnection connection = connector.getMBeanServerConnection();
             ComponentInfoMBean componentInfo =
                     MBeanServerInvocationHandler.newProxyInstance(
                             connection, beanName, ComponentInfoMBean.class, true);
-            hotkeyListeners.put(port, new SwagHotkeyListener(componentInfo));
+            hotkeyListeners.put(port, new SwagHotkeyListener(componentInfo, project));
             return true;
         } catch (IOException e_) {
             return false;
