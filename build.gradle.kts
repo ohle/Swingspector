@@ -35,7 +35,7 @@ intellij {
 }
 
 dependencies {
-    implementation(files("libs/swag-1.0.jar"))
+    implementation(files("libs/swag-1.1.jar"))
 }
 
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
