@@ -5,6 +5,8 @@ import javax.management.NotificationListener;
 
 import javax.swing.JPanel;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.intellij.icons.AllIcons.Actions;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
@@ -48,7 +50,6 @@ public class SwagHotkeyListener implements Disposable {
         public void handleNotification(Notification notification, Object handback) {
             int id = (Integer) notification.getUserData();
             ApplicationManager.getApplication().invokeLater(() -> openToolWindow(id));
-            System.out.println(componentInfo.getPlacementInfo(id));
         }
 
         private void openToolWindow(int id) {
@@ -71,7 +72,7 @@ public class SwagHotkeyListener implements Disposable {
                             .getFactory()
                             .createContent(
                                     new ComponentInfoPanel(componentInfo, id),
-                                    generateTabName(description),
+                                    generateTabTitle(description),
                                     true);
             tab.setTabName(tabId);
             contentManager.addContent(tab);
@@ -99,13 +100,18 @@ public class SwagHotkeyListener implements Disposable {
         }
     }
 
-    private String generateTabName(ComponentDescription description) {
+    private String generateTabTitle(ComponentDescription description) {
         StringBuilder sb = new StringBuilder();
+        boolean hasPrefix = false;
         if (description.name != null) {
             sb.append(description.name).append(" (");
+            hasPrefix = true;
+        } else if (description.text != null) {
+            sb.append(StringUtils.abbreviate(description.text, 15)).append(" (");
+            hasPrefix = true;
         }
         sb.append(description.simpleClassName);
-        if (description.name != null) {
+        if (hasPrefix) {
             sb.append((")"));
         }
         return sb.toString();
