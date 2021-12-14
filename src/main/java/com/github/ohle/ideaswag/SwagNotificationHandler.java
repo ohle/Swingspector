@@ -46,7 +46,15 @@ public class SwagNotificationHandler {
 
     public boolean startListeningTo(int port, Project project) {
         try {
-            JMXConnector connector = JMXConnectorFactory.connect(constructURL(port));
+            Map<String, Object> connectionEnvironment = new HashMap<>();
+            // JMX uses the thread's context classloader to deserialize objects. Since this
+            // is called from the event thread, override with the plugin classloader to enable
+            // access to SWAG classes
+            connectionEnvironment.put(
+                    JMXConnectorFactory.DEFAULT_CLASS_LOADER,
+                    SwagNotificationHandler.class.getClassLoader());
+            JMXConnector connector =
+                    JMXConnectorFactory.connect(constructURL(port), connectionEnvironment);
             MBeanServerConnection connection = connector.getMBeanServerConnection();
             ComponentInfoMBean componentInfo =
                     MBeanServerInvocationHandler.newProxyInstance(
