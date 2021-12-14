@@ -1,5 +1,8 @@
 package com.github.ohle.ideaswag;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.management.Notification;
 import javax.management.NotificationListener;
 
@@ -14,7 +17,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.RegisterToolWindowTask;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
-import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
@@ -30,6 +32,8 @@ public class SwagHotkeyListener implements Disposable {
 
     private static ToolWindow toolWindow = null;
 
+    private final Set<Content> openedTabs = new HashSet<>();
+
     public SwagHotkeyListener(ComponentInfoMBean componentInfo_, Project project_) {
         componentInfo = componentInfo_;
         listener = new Listener();
@@ -39,6 +43,13 @@ public class SwagHotkeyListener implements Disposable {
 
     @Override
     public void dispose() {
+        ApplicationManager.getApplication()
+                .invokeLater(
+                        () -> {
+                            for (Content openedTab : openedTabs) {
+                                toolWindow.getContentManager().removeContent(openedTab, true);
+                            }
+                        });
         try {
             componentInfo.removeNotificationListener(listener);
         } catch (Throwable ignored) {
@@ -76,13 +87,12 @@ public class SwagHotkeyListener implements Disposable {
                                     true);
             tab.setTabName(tabId);
             contentManager.addContent(tab);
+            openedTabs.add(tab);
             contentManager.addSelectedContent(tab);
             toolWindow.activate(() -> {});
         }
 
         private void registerToolWindow() {
-            ToolWindowFactory factory =
-                    (project, toolWindow) -> System.out.println("Listener.createToolWindowContent");
             toolWindow =
                     ToolWindowManager.getInstance(project)
                             .registerToolWindow(
@@ -94,7 +104,7 @@ public class SwagHotkeyListener implements Disposable {
                                             true,
                                             true,
                                             true,
-                                            factory,
+                                            (project1, toolWindow1) -> {},
                                             Actions.Search,
                                             () -> "Swing Components"));
         }
