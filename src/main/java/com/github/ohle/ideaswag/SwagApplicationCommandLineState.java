@@ -8,6 +8,7 @@ import java.net.ServerSocket;
 
 import java.nio.file.Path;
 
+import javax.swing.KeyStroke;
 import javax.swing.Timer;
 
 import com.intellij.execution.ExecutionException;
@@ -28,12 +29,14 @@ public class SwagApplicationCommandLineState
     private static final Logger LOG = Logger.getInstance(SwagApplicationCommandLineState.class);
     private final int port;
     private final String agentJar;
+    private final KeyStroke hotKey;
 
     public SwagApplicationCommandLineState(
             @NotNull SwagConfiguration configuration, ExecutionEnvironment environment) {
         super(configuration, environment);
         port = findFreePort();
         agentJar = findAgentJar();
+        hotKey = configuration.getKeyStroke();
     }
 
     @Override
@@ -84,7 +87,15 @@ public class SwagApplicationCommandLineState
         vmOptions.add("-Dcom.sun.management.jmxremote.port=" + port);
         vmOptions.add("-Dcom.sun.management.jmxremote.authenticate=false");
         vmOptions.add("-Dcom.sun.management.jmxremote.ssl=false");
-        vmOptions.add("-javaagent:" + agentJar + "=" + agentJar);
+        vmOptions.add(
+                "-javaagent:"
+                        + agentJar
+                        + "=agentJar:"
+                        + agentJar
+                        + ",keyCode:"
+                        + hotKey.getKeyCode()
+                        + ",modifiers:"
+                        + hotKey.getModifiers());
         return parameters;
     }
 

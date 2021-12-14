@@ -1,5 +1,9 @@
 package com.github.ohle.ideaswag;
 
+import java.awt.event.KeyEvent;
+
+import javax.swing.KeyStroke;
+
 import com.intellij.execution.Executor;
 import com.intellij.execution.JavaRunConfigurationExtensionManager;
 import com.intellij.execution.application.ApplicationConfiguration;
@@ -34,8 +38,8 @@ public class SwagConfiguration extends ApplicationConfiguration {
     @Override
     public void checkConfiguration() throws RuntimeConfigurationException {
         super.checkConfiguration();
-        if (!"foo".equals(getOptions().getFoo())) {
-            throw new RuntimeConfigurationError("The foo was frobnicated!");
+        if (getKeyStroke().getKeyCode() == KeyEvent.VK_UNDEFINED) {
+            throw new RuntimeConfigurationError("Keyboard Shortcut must be set.");
         }
         JavaRunConfigurationExtensionManager.checkConfigurationIsValid(this);
     }
@@ -54,12 +58,12 @@ public class SwagConfiguration extends ApplicationConfiguration {
         return new SwagConfigurable(getProject());
     }
 
-    public void setFoo(String foo_) {
-        getOptions().setFoo(foo_);
+    public KeyStroke getKeyStroke() {
+        return getOptions().getKeyStroke();
     }
 
-    public String getFoo() {
-        return getOptions().getFoo();
+    public void setKeyStroke(KeyStroke keyStroke) {
+        getOptions().setKeyStroke(keyStroke);
     }
 
     public static class Factory extends ConfigurationFactory {

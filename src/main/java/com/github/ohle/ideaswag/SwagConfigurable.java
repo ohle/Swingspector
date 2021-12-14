@@ -29,9 +29,10 @@ public class SwagConfigurable extends SettingsEditor<SwagConfiguration> implemen
     private final ConfigurationModuleSelector moduleSelector;
     private final LabeledComponent<ModuleDescriptionsComboBox> module;
     private final LabeledComponent<JTextField> mainClass;
-    private final LabeledComponent<JTextField> foo;
     private final JPanel mainPanel;
     private JComponent anchor;
+
+    private final LabeledComponent<ShortcutTextField> shortcutField;
 
     public SwagConfigurable(@NotNull Project project) {
 
@@ -40,10 +41,10 @@ public class SwagConfigurable extends SettingsEditor<SwagConfiguration> implemen
         mainClass.setText("Main class");
         mainClass.setComponent(new JTextField());
 
-        foo = new LabeledComponent<>();
-        foo.setLabelLocation(BorderLayout.WEST);
-        foo.setText("Foo");
-        foo.setComponent(new JTextField());
+        shortcutField = new LabeledComponent<>();
+        shortcutField.setLabelLocation(BorderLayout.WEST);
+        shortcutField.setText("Keyboard Shortcut");
+        shortcutField.setComponent(new ShortcutTextField(false));
 
         module = new LabeledComponent<>();
         module.setLabelLocation(BorderLayout.WEST);
@@ -73,7 +74,7 @@ public class SwagConfigurable extends SettingsEditor<SwagConfiguration> implemen
         mainPanel.add(mainClass, constraints);
         constraints.gridx = GridBagConstraints.RELATIVE;
         constraints.gridy++;
-        mainPanel.add(foo, constraints);
+        mainPanel.add(shortcutField, constraints);
         constraints.gridy++;
         constraints.weighty = 1.0;
         constraints.fill = GridBagConstraints.BOTH;
@@ -92,7 +93,7 @@ public class SwagConfigurable extends SettingsEditor<SwagConfiguration> implemen
         commonPanel.applyTo(config);
         moduleSelector.applyTo(config);
         config.setMainClassName(mainClass.getComponent().getText().trim());
-        config.setFoo(foo.getComponent().getText().trim());
+        config.setKeyStroke(shortcutField.getComponent().getKeyStroke());
     }
 
     @Override
@@ -105,7 +106,7 @@ public class SwagConfigurable extends SettingsEditor<SwagConfiguration> implemen
                         config.getMainClassName() != null
                                 ? config.getMainClassName().replaceAll("\\$", "\\.")
                                 : "");
-        foo.getComponent().setText(config.getFoo());
+        shortcutField.getComponent().setKeyStroke(config.getKeyStroke());
     }
 
     @Override
@@ -124,6 +125,6 @@ public class SwagConfigurable extends SettingsEditor<SwagConfiguration> implemen
         commonPanel.setAnchor(anchor);
         module.setAnchor(anchor);
         mainClass.setAnchor(anchor);
-        foo.setAnchor(foo);
+        shortcutField.setAnchor(anchor);
     }
 }
