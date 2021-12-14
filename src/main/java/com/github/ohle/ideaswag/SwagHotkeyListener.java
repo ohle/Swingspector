@@ -78,12 +78,13 @@ public class SwagHotkeyListener implements Disposable {
                 }
             }
             ComponentDescription description = componentInfo.getDescription(id);
+            String title = generateTabTitle(description);
             Content tab =
                     contentManager
                             .getFactory()
                             .createContent(
-                                    new ComponentInfoPanel(componentInfo, id),
-                                    generateTabTitle(description),
+                                    new ComponentInfoPanel(project, componentInfo, title, id),
+                                    title,
                                     true);
             tab.setTabName(tabId);
             contentManager.addContent(tab);
