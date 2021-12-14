@@ -17,6 +17,7 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
 
+import de.eudaemon.swag.ComponentDescription;
 import de.eudaemon.swag.ComponentInfoMBean;
 
 public class SwagHotkeyListener implements Disposable {
@@ -64,12 +65,13 @@ public class SwagHotkeyListener implements Disposable {
                     return;
                 }
             }
+            ComponentDescription description = componentInfo.getDescription(id);
             Content tab =
                     contentManager
                             .getFactory()
                             .createContent(
                                     new ComponentInfoPanel(componentInfo, id),
-                                    String.valueOf(id),
+                                    generateTabName(description),
                                     true);
             contentManager.addContent(tab);
             contentManager.addSelectedContent(tab);
@@ -94,5 +96,17 @@ public class SwagHotkeyListener implements Disposable {
                                             Actions.Search,
                                             () -> "Swing Components"));
         }
+    }
+
+    private String generateTabName(ComponentDescription description) {
+        StringBuilder sb = new StringBuilder();
+        if (description.name != null) {
+            sb.append(description.name).append(" (");
+        }
+        sb.append(description.simpleClassName);
+        if (description.name != null) {
+            sb.append((")"));
+        }
+        return sb.toString();
     }
 }
