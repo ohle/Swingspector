@@ -89,7 +89,7 @@ public class SwagHotkeyListener implements Disposable {
             tab.setTabName(tabId);
             contentManager.addContent(tab);
             openedTabs.add(tab);
-            contentManager.addSelectedContent(tab);
+            contentManager.setSelectedContent(tab);
             toolWindow.activate(() -> {});
         }
 
