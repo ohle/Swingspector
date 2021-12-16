@@ -1,0 +1,18 @@
+{
+  "name": "IDEA Swag",
+  "fixed": false,
+  "ui": [
+    {
+      "key": "IDEASwag.MinSize.foreground",
+      "description": "Visualization of a component's minimum size"
+    },
+    {
+      "key": "IDEASwag.PrefSize.foreground",
+      "description": "Visualization of a component's preferred size"
+    },
+    {
+      "key": "IDEASwag.MaxSize.foreground",
+      "description": "Visualization of a component's maximum size"
+    }
+  ]
+}

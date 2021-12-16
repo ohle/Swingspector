@@ -9,6 +9,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <configurationType implementation="com.github.ohle.ideaswag.SwagConfigurationType"/>
+        <themeMetadataProvider path="/META-INF/idea-swag.themeMetadata.json"/>
     </extensions>
 
     <applicationListeners>
