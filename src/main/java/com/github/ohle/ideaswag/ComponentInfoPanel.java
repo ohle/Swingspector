@@ -1,6 +1,9 @@
 package com.github.ohle.ideaswag;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import java.util.stream.Collectors;
 
@@ -21,8 +24,11 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 
 import javax.swing.border.EmptyBorder;
+
+import javax.swing.table.TableCellRenderer;
 
 import com.intellij.execution.filters.TextConsoleBuilder;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
@@ -33,17 +39,30 @@ import com.intellij.openapi.project.Project;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.JBSplitter;
 import com.intellij.ui.components.JBScrollPane;
+import com.intellij.ui.components.JBTabbedPane;
+import com.intellij.ui.table.JBTable;
 import com.intellij.unscramble.AnalyzeStacktraceUtil;
 import com.intellij.util.ui.JBInsets;
 import com.intellij.util.ui.JBUI;
 
 import de.eudaemon.swag.ComponentInfoMBean;
+import de.eudaemon.swag.ComponentProperty;
 import de.eudaemon.swag.SizeInfos;
 
 public class ComponentInfoPanel extends JPanel implements Disposable {
 
     private static final String SPLIT_PROPORTION_KEY =
-            "de.eudaemon.idea-swag.component-info-panel.split-proportion";
+            "de.eudaemon.idea-swag.component-info-panel.main-split-proportion";
+    private static final String RIGHT_SPLIT_PROPORTION_KEY =
+            "de.eudaemon.idea-swag.component-info-panel.right-split-proportion";
+
+    static final JBColor MIN_SIZE_COLOR =
+            JBColor.namedColor("IDEASwag.MinSize.foreground", 0x268bd2);
+    static final JBColor PREF_SIZE_COLOR =
+            JBColor.namedColor("IDEASwag.PrefSize.foreground", 0x859900);
+    static final JBColor MAX_SIZE_COLOR =
+            JBColor.namedColor("IDEASwag.MaxSize.foreground", 0xd33682);
+
     private final ComponentInfoMBean componentInfo;
     private final int componentId;
     private final Project project;
@@ -59,10 +78,13 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
         project = project_;
         title = title_;
         setLayout(new BorderLayout());
-        JBSplitter splitter = new JBSplitter(SPLIT_PROPORTION_KEY, .5f);
+        JBSplitter mainSplitter = new JBSplitter(SPLIT_PROPORTION_KEY, .7f);
+        JBSplitter splitter = new JBSplitter(RIGHT_SPLIT_PROPORTION_KEY, .5f);
         splitter.setFirstComponent(new VisualPanel());
         splitter.setSecondComponent(createAdditionTracePanel());
-        add(splitter, BorderLayout.CENTER);
+        mainSplitter.setFirstComponent(splitter);
+        mainSplitter.setSecondComponent(createPropertiesPanel());
+        add(mainSplitter, BorderLayout.CENTER);
     }
 
     private JComponent createAdditionTracePanel() {
@@ -202,6 +224,7 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
     private class Visualization extends JPanel {
 
         private static final int SIZE_CUTOFF = 200;
+
         private final SizeInfos sizing;
         private final BufferedImage snapshot;
         private final Stroke normalStroke = new BasicStroke(1);
@@ -269,10 +292,27 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
         }
     }
 
-    static final JBColor MIN_SIZE_COLOR =
-            JBColor.namedColor("IDEASwag.MinSize.foreground", 0x268bd2);
-    static final JBColor PREF_SIZE_COLOR =
-            JBColor.namedColor("IDEASwag.PrefSize.foreground", 0x859900);
-    static final JBColor MAX_SIZE_COLOR =
-            JBColor.namedColor("IDEASwag.MaxSize.foreground", 0xd33682);
+    private JComponent createPropertiesPanel() {
+        JBTabbedPane tabbedPane = new JBTabbedPane();
+        Collection<ComponentProperty> props = componentInfo.getAllProperties(componentId);
+        Map<String, List<ComponentProperty>> propsByCategory =
+                props.stream().collect(Collectors.groupingBy(cp -> cp.category));
+
+        for (String category : propsByCategory.keySet()) {
+            List<ComponentProperty> theseProps = propsByCategory.get(category);
+            JBTable table = new JBTable(new ComponentPropertiesModel(theseProps));
+            int width = 15;
+            for (int row = 0; row < table.getRowCount(); row++) {
+                TableCellRenderer renderer = table.getCellRenderer(row, 0);
+                Component c = table.prepareRenderer(renderer, row, 0);
+                width = Math.max(c.getPreferredSize().width + 1, width);
+            }
+            table.getColumnModel().getColumn(0).setPreferredWidth(width);
+            table.getColumnModel().getColumn(0).setMaxWidth(width);
+            table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+            tabbedPane.add(category, new JBScrollPane(table));
+        }
+
+        return tabbedPane;
+    }
 }

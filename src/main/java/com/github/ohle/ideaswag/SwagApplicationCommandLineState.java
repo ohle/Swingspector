@@ -105,7 +105,7 @@ public class SwagApplicationCommandLineState
                         System.getProperty("idea.plugins.path"),
                         "idea-swag",
                         "lib",
-                        "swag-1.1.jar");
+                        "swag-1.2.jar");
         return agentJarPath.toFile().getAbsolutePath();
     }
 
