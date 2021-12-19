@@ -8,8 +8,6 @@ import javax.management.NotificationListener;
 
 import javax.swing.JPanel;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.intellij.icons.AllIcons.Actions;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
@@ -78,14 +76,11 @@ public class SwagHotkeyListener implements Disposable {
                 }
             }
             ComponentDescription description = componentInfo.getDescription(id);
-            String title = generateTabTitle(description);
+            ComponentInfoPanel infoPanel = new ComponentInfoPanel(project, componentInfo, id);
             Content tab =
                     contentManager
                             .getFactory()
-                            .createContent(
-                                    new ComponentInfoPanel(project, componentInfo, title, id),
-                                    title,
-                                    true);
+                            .createContent(infoPanel, infoPanel.getTitle(), true);
             tab.setTabName(tabId);
             contentManager.addContent(tab);
             openedTabs.add(tab);
@@ -109,22 +104,5 @@ public class SwagHotkeyListener implements Disposable {
                                             Actions.Search,
                                             () -> "Swing Components"));
         }
-    }
-
-    private String generateTabTitle(ComponentDescription description) {
-        StringBuilder sb = new StringBuilder();
-        boolean hasPrefix = false;
-        if (description.name != null) {
-            sb.append(description.name).append(" (");
-            hasPrefix = true;
-        } else if (description.text != null) {
-            sb.append(StringUtils.abbreviate(description.text, 15)).append(" (");
-            hasPrefix = true;
-        }
-        sb.append(description.simpleClassName);
-        if (hasPrefix) {
-            sb.append((")"));
-        }
-        return sb.toString();
     }
 }

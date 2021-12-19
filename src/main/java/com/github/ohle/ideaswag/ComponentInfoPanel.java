@@ -30,6 +30,8 @@ import javax.swing.border.EmptyBorder;
 
 import javax.swing.table.TableCellRenderer;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.intellij.execution.filters.TextConsoleBuilder;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
@@ -45,8 +47,10 @@ import com.intellij.unscramble.AnalyzeStacktraceUtil;
 import com.intellij.util.ui.JBInsets;
 import com.intellij.util.ui.JBUI;
 
+import de.eudaemon.swag.ComponentDescription;
 import de.eudaemon.swag.ComponentInfoMBean;
 import de.eudaemon.swag.ComponentProperty;
+import de.eudaemon.swag.PlacementInfo;
 import de.eudaemon.swag.SizeInfos;
 
 public class ComponentInfoPanel extends JPanel implements Disposable {
@@ -72,11 +76,11 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
     public void dispose() {}
 
     public ComponentInfoPanel(
-            Project project_, ComponentInfoMBean componentInfo_, String title_, int componentId_) {
+            Project project_, ComponentInfoMBean componentInfo_, int componentId_) {
         componentInfo = componentInfo_;
         componentId = componentId_;
         project = project_;
-        title = title_;
+        title = generateTitle(componentInfo.getDescription(componentId));
         setLayout(new BorderLayout());
         JBSplitter mainSplitter = new JBSplitter(SPLIT_PROPORTION_KEY, .7f);
         JBSplitter splitter = new JBSplitter(RIGHT_SPLIT_PROPORTION_KEY, .5f);
@@ -85,6 +89,27 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
         mainSplitter.setFirstComponent(splitter);
         mainSplitter.setSecondComponent(createPropertiesPanel());
         add(mainSplitter, BorderLayout.CENTER);
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    private String generateTitle(ComponentDescription description) {
+        StringBuilder sb = new StringBuilder();
+        boolean hasPrefix = false;
+        if (description.name != null) {
+            sb.append(description.name).append(" (");
+            hasPrefix = true;
+        } else if (description.text != null) {
+            sb.append(StringUtils.abbreviate(description.text, 15)).append(" (");
+            hasPrefix = true;
+        }
+        sb.append(description.simpleClassName);
+        if (hasPrefix) {
+            sb.append((")"));
+        }
+        return sb.toString();
     }
 
     private JComponent createAdditionTracePanel() {
@@ -98,10 +123,30 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
     }
 
     private String getStackTraceAsText() {
-        StackTraceElement[] stackTrace = componentInfo.getPlacementInfo(componentId).stackTrace;
-        return Arrays.stream(stackTrace)
-                .map(StackTraceElement::toString)
-                .collect(Collectors.joining("\n"));
+        PlacementInfo placementInfo = componentInfo.getPlacementInfo(componentId);
+        StackTraceElement[] stackTrace = placementInfo.stackTrace;
+        int parentId = componentInfo.getParent(componentId);
+        ComponentDescription parentDescription = componentInfo.getDescription(parentId);
+
+        String layoutDescription =
+                componentInfo.getAllProperties(parentId).stream()
+                        .filter(p -> "layout".equals(p.key))
+                        .findAny()
+                        .map(l -> " (Layout " + l.valueDescription + ")")
+                        .orElse("null");
+        String prelude =
+                "Added to "
+                        + generateTitle(parentDescription)
+                        + layoutDescription
+                        + "\nat index "
+                        + placementInfo.index
+                        + "\nwith constraints "
+                        + placementInfo.constraints
+                        + ":\n";
+        return prelude
+                + Arrays.stream(stackTrace)
+                        .map(StackTraceElement::toString)
+                        .collect(Collectors.joining("\n     ", "     ", ""));
     }
 
     private class VisualPanel extends JPanel {
