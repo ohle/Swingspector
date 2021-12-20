@@ -20,6 +20,12 @@ public class RunningComponent {
         componentId = componentId_;
     }
 
+    public static Collection<RunningComponent> getRoots(ComponentInfoMBean infoBean) {
+        return infoBean.getRoots().stream()
+                .map(rootId -> new RunningComponent(infoBean, rootId))
+                .collect(Collectors.toSet());
+    }
+
     public Collection<RunningComponent> getChildren() {
         return connectedBean.getChildren(componentId).stream()
                 .map(id -> new RunningComponent(connectedBean, id))

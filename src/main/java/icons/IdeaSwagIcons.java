@@ -35,6 +35,7 @@ public interface IdeaSwagIcons {
     Icon Toolbar = IconLoader.getIcon("/icons/toolbar.svg", IdeaSwagIcons.class);
     Icon Tree = IconLoader.getIcon("/icons/tree.svg", IdeaSwagIcons.class);
     Icon Unknown = IconLoader.getIcon("/icons/unknown.svg", IdeaSwagIcons.class);
+    Icon Window = Actions.MoveToWindow;
 
     static Icon fromDescription(ComponentDescription description) {
         switch (description.iconKey) {
@@ -87,7 +88,7 @@ public interface IdeaSwagIcons {
             case "tree":
                 return Tree;
             case "window":
-                return Actions.MoveToWindow;
+                return Window;
             default:
                 return Unknown;
         }

@@ -44,7 +44,7 @@ public class SwagNotificationHandler {
         return Holder.INSTANCE;
     }
 
-    public boolean startListeningTo(int port, Project project) {
+    public ComponentInfoMBean startListeningTo(int port, Project project) {
         try {
             Map<String, Object> connectionEnvironment = new HashMap<>();
             // JMX uses the thread's context classloader to deserialize objects. Since this
@@ -60,9 +60,9 @@ public class SwagNotificationHandler {
                     MBeanServerInvocationHandler.newProxyInstance(
                             connection, beanName, ComponentInfoMBean.class, true);
             hotkeyListeners.put(port, new SwagHotkeyListener(componentInfo, project));
-            return true;
+            return componentInfo;
         } catch (IOException e_) {
-            return false;
+            return null;
         }
     }
 

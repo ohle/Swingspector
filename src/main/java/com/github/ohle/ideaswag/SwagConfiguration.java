@@ -7,6 +7,7 @@ import javax.swing.KeyStroke;
 import com.intellij.execution.Executor;
 import com.intellij.execution.JavaRunConfigurationExtensionManager;
 import com.intellij.execution.application.ApplicationConfiguration;
+import com.intellij.execution.configurations.AdditionalTabComponentManager;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.configurations.JavaCommandLineState;
@@ -15,6 +16,7 @@ import com.intellij.execution.configurations.RunProfileState;
 import com.intellij.execution.configurations.RuntimeConfigurationError;
 import com.intellij.execution.configurations.RuntimeConfigurationException;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
+import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.components.BaseState;
 import com.intellij.openapi.options.SettingsEditor;
@@ -42,6 +44,13 @@ public class SwagConfiguration extends ApplicationConfiguration {
             throw new RuntimeConfigurationError("Keyboard Shortcut must be set.");
         }
         JavaRunConfigurationExtensionManager.checkConfigurationIsValid(this);
+    }
+
+    @Override
+    public void createAdditionalTabComponents(
+            AdditionalTabComponentManager manager, ProcessHandler startedProcess) {
+        manager.addAdditionalTabComponent(
+                new SwagRootsTab(startedProcess.getUserData(Util.INFO_BEAN_KEY)), "SwagTab");
     }
 
     @Override
