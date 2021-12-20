@@ -24,13 +24,13 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 
 import javax.swing.border.EmptyBorder;
 
 import javax.swing.table.TableCellRenderer;
-
-import org.apache.commons.lang.StringUtils;
 
 import com.intellij.execution.filters.TextConsoleBuilder;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
@@ -43,6 +43,7 @@ import com.intellij.ui.JBSplitter;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTabbedPane;
 import com.intellij.ui.table.JBTable;
+import com.intellij.ui.treeStructure.Tree;
 import com.intellij.unscramble.AnalyzeStacktraceUtil;
 import com.intellij.util.ui.JBInsets;
 import com.intellij.util.ui.JBUI;
@@ -52,6 +53,7 @@ import de.eudaemon.swag.ComponentInfoMBean;
 import de.eudaemon.swag.ComponentProperty;
 import de.eudaemon.swag.PlacementInfo;
 import de.eudaemon.swag.SizeInfos;
+import org.jetbrains.annotations.NotNull;
 
 public class ComponentInfoPanel extends JPanel implements Disposable {
 
@@ -80,12 +82,12 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
         componentInfo = componentInfo_;
         componentId = componentId_;
         project = project_;
-        title = generateTitle(componentInfo.getDescription(componentId));
+        title = Util.generateTitle(componentInfo.getDescription(componentId));
         setLayout(new BorderLayout());
         JBSplitter mainSplitter = new JBSplitter(SPLIT_PROPORTION_KEY, .7f);
         JBSplitter splitter = new JBSplitter(RIGHT_SPLIT_PROPORTION_KEY, .5f);
-        splitter.setFirstComponent(new VisualPanel());
-        splitter.setSecondComponent(createAdditionTracePanel());
+        splitter.setFirstComponent(createTreeAndPlacementPanel());
+        splitter.setSecondComponent(new VisualPanel());
         mainSplitter.setFirstComponent(splitter);
         mainSplitter.setSecondComponent(createPropertiesPanel());
         add(mainSplitter, BorderLayout.CENTER);
@@ -95,24 +97,15 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
         return title;
     }
 
-    private String generateTitle(ComponentDescription description) {
-        StringBuilder sb = new StringBuilder();
-        boolean hasPrefix = false;
-        if (description.name != null) {
-            sb.append(description.name).append(" (");
-            hasPrefix = true;
-        } else if (description.text != null) {
-            sb.append(StringUtils.abbreviate(description.text, 15)).append(" (");
-            hasPrefix = true;
-        }
-        sb.append(description.simpleClassName);
-        if (hasPrefix) {
-            sb.append((")"));
-        }
-        return sb.toString();
+    private JComponent createTreeAndPlacementPanel() {
+        JTabbedPane tabbedPane = new JBTabbedPane(SwingConstants.TOP);
+        tabbedPane.add("Placement", createPlacementPanel());
+        tabbedPane.add("Hierarchy", createTreePanel());
+        return tabbedPane;
     }
 
-    private JComponent createAdditionTracePanel() {
+    @NotNull
+    private JComponent createPlacementPanel() {
         final TextConsoleBuilder builder =
                 TextConsoleBuilderFactory.getInstance().createBuilder(project);
         builder.filters(AnalyzeStacktraceUtil.EP_NAME.getExtensions(project));
@@ -136,7 +129,7 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
                         .orElse("null");
         String prelude =
                 "Added to "
-                        + generateTitle(parentDescription)
+                        + Util.generateTitle(parentDescription)
                         + layoutDescription
                         + "\nat index "
                         + placementInfo.index
@@ -147,6 +140,13 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
                 + Arrays.stream(stackTrace)
                         .map(StackTraceElement::toString)
                         .collect(Collectors.joining("\n     ", "     ", ""));
+    }
+
+    private Component createTreePanel() {
+        ComponentTreeNode root = new ComponentTreeNode(componentId, componentInfo);
+        Tree tree = new Tree(root);
+        tree.setCellRenderer(new ComponentTreeNodeRenderer());
+        return new JBScrollPane(tree);
     }
 
     private class VisualPanel extends JPanel {
