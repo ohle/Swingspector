@@ -19,7 +19,6 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
 
-import de.eudaemon.swag.ComponentDescription;
 import de.eudaemon.swag.ComponentInfoMBean;
 
 public class SwagHotkeyListener implements Disposable {
@@ -75,8 +74,8 @@ public class SwagHotkeyListener implements Disposable {
                     return;
                 }
             }
-            ComponentDescription description = componentInfo.getDescription(id);
-            ComponentInfoPanel infoPanel = new ComponentInfoPanel(project, componentInfo, id);
+            ComponentInfoPanel infoPanel =
+                    new ComponentInfoPanel(project, new RunningComponent(componentInfo, id));
             Content tab =
                     contentManager
                             .getFactory()

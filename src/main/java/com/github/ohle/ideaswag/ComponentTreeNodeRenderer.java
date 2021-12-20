@@ -6,6 +6,7 @@ import javax.swing.JTree;
 
 import javax.swing.tree.DefaultTreeCellRenderer;
 
+import de.eudaemon.swag.ComponentDescription;
 import icons.IdeaSwagIcons;
 
 public class ComponentTreeNodeRenderer extends DefaultTreeCellRenderer {
@@ -20,8 +21,9 @@ public class ComponentTreeNodeRenderer extends DefaultTreeCellRenderer {
             boolean hasFocus) {
         ComponentTreeNode node = (ComponentTreeNode) value;
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-        setText(Util.generateTitle(node.getInfo().getDescription(node.getNodeId())));
-        setIcon(IdeaSwagIcons.fromDescription(node.getInfo().getDescription(node.getNodeId())));
+        ComponentDescription description = node.getComponent().getDescription();
+        setText(Util.generateTitle(description));
+        setIcon(IdeaSwagIcons.fromDescription(description));
         return this;
     }
 }

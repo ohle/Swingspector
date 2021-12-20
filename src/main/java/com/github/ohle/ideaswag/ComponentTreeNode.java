@@ -2,31 +2,23 @@ package com.github.ohle.ideaswag;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import de.eudaemon.swag.ComponentInfoMBean;
-
 public class ComponentTreeNode extends DefaultMutableTreeNode {
 
-    private int nodeId;
-    private ComponentInfoMBean info;
+    private final RunningComponent component;
 
-    public ComponentTreeNode(int nodeId_, ComponentInfoMBean info_) {
-        super(nodeId_);
-        nodeId = nodeId_;
-        info = info_;
+    public ComponentTreeNode(RunningComponent component_) {
+        super(component_);
+        component = component_;
         addChildren();
     }
 
     private void addChildren() {
-        for (Integer childId : info.getChildren(nodeId)) {
-            add(new ComponentTreeNode(childId, info));
+        for (RunningComponent child : component.getChildren()) {
+            add(new ComponentTreeNode(child));
         }
     }
 
-    public int getNodeId() {
-        return nodeId;
-    }
-
-    public ComponentInfoMBean getInfo() {
-        return info;
+    public RunningComponent getComponent() {
+        return component;
     }
 }

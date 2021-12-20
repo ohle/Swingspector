@@ -48,8 +48,6 @@ import com.intellij.unscramble.AnalyzeStacktraceUtil;
 import com.intellij.util.ui.JBInsets;
 import com.intellij.util.ui.JBUI;
 
-import de.eudaemon.swag.ComponentDescription;
-import de.eudaemon.swag.ComponentInfoMBean;
 import de.eudaemon.swag.ComponentProperty;
 import de.eudaemon.swag.PlacementInfo;
 import de.eudaemon.swag.SizeInfos;
@@ -69,20 +67,17 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
     static final JBColor MAX_SIZE_COLOR =
             JBColor.namedColor("IDEASwag.MaxSize.foreground", 0xd33682);
 
-    private final ComponentInfoMBean componentInfo;
-    private final int componentId;
+    private final RunningComponent component;
     private final Project project;
     private final String title;
 
     @Override
     public void dispose() {}
 
-    public ComponentInfoPanel(
-            Project project_, ComponentInfoMBean componentInfo_, int componentId_) {
-        componentInfo = componentInfo_;
-        componentId = componentId_;
+    public ComponentInfoPanel(Project project_, RunningComponent component_) {
+        component = component_;
         project = project_;
-        title = Util.generateTitle(componentInfo.getDescription(componentId));
+        title = Util.generateTitle(component.getDescription());
         setLayout(new BorderLayout());
         JBSplitter mainSplitter = new JBSplitter(SPLIT_PROPORTION_KEY, .7f);
         JBSplitter splitter = new JBSplitter(RIGHT_SPLIT_PROPORTION_KEY, .5f);
@@ -116,20 +111,19 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
     }
 
     private String getStackTraceAsText() {
-        PlacementInfo placementInfo = componentInfo.getPlacementInfo(componentId);
+        PlacementInfo placementInfo = component.getPlacementInfo();
         StackTraceElement[] stackTrace = placementInfo.stackTrace;
-        int parentId = componentInfo.getParent(componentId);
-        ComponentDescription parentDescription = componentInfo.getDescription(parentId);
+        RunningComponent parent = component.getParent();
 
         String layoutDescription =
-                componentInfo.getAllProperties(parentId).stream()
+                component.getAllProperties().stream()
                         .filter(p -> "layout".equals(p.key))
                         .findAny()
                         .map(l -> " (Layout " + l.valueDescription + ")")
                         .orElse("null");
         String prelude =
                 "Added to "
-                        + Util.generateTitle(parentDescription)
+                        + Util.generateTitle(parent.getDescription())
                         + layoutDescription
                         + "\nat index "
                         + placementInfo.index
@@ -143,7 +137,7 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
     }
 
     private Component createTreePanel() {
-        ComponentTreeNode root = new ComponentTreeNode(componentId, componentInfo);
+        ComponentTreeNode root = new ComponentTreeNode(component);
         Tree tree = new Tree(root);
         tree.setCellRenderer(new ComponentTreeNodeRenderer());
         return new JBScrollPane(tree);
@@ -155,12 +149,11 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
 
         private VisualPanel() {
             setLayout(new BorderLayout());
-            sizeInfos = componentInfo.getSizeInfos(componentId);
+            sizeInfos = component.getSizeInfos();
             add(createSizeTablePanel(), BorderLayout.NORTH);
             add(
                     new JBScrollPane(
-                            new Visualization(
-                                    sizeInfos, componentInfo.getSnapshot(componentId).getImage())),
+                            new Visualization(sizeInfos, component.getSnapshot().getImage())),
                     BorderLayout.CENTER);
         }
 
@@ -339,7 +332,7 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
 
     private JComponent createPropertiesPanel() {
         JBTabbedPane tabbedPane = new JBTabbedPane();
-        Collection<ComponentProperty> props = componentInfo.getAllProperties(componentId);
+        Collection<ComponentProperty> props = component.getAllProperties();
         Map<String, List<ComponentProperty>> propsByCategory =
                 props.stream().collect(Collectors.groupingBy(cp -> cp.category));
 
