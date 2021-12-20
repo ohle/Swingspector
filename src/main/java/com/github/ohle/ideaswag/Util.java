@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import java.util.concurrent.CompletableFuture;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import org.apache.commons.lang.StringUtils;
@@ -55,15 +56,8 @@ public class Util {
             treeToolWindow.activate(() -> {});
             return existingTab.get();
         } else {
-            String tabId = String.valueOf(component);
-            String title = generateTitle(component.getDescription());
             Content tab =
-                    contentManager
-                            .getFactory()
-                            .createContent(new TreeViewPanel(component), title, true);
-            tab.setTabName(tabId);
-            contentManager.addContent(tab);
-            contentManager.setSelectedContent(tab);
+                    createOrReplaceTab(component, contentManager, new TreeViewPanel(component));
             treeToolWindow.activate(() -> {});
             return tab;
         }
@@ -79,18 +73,36 @@ public class Util {
             componentToolWindow.activate(() -> {});
             return existingTab.get();
         } else {
-            String tabId = String.valueOf(component.getId());
-            ComponentInfoPanel infoPanel = new ComponentInfoPanel(component);
             Content tab =
-                    contentManager
-                            .getFactory()
-                            .createContent(infoPanel, infoPanel.getTitle(), true);
-            tab.setTabName(tabId);
-            contentManager.addContent(tab);
-            contentManager.setSelectedContent(tab);
+                    createOrReplaceTab(
+                            component, contentManager, new ComponentInfoPanel(component));
             componentToolWindow.activate(() -> {});
             return tab;
         }
+    }
+
+    private static Content createOrReplaceTab(
+            RunningComponent component, ContentManager contentManager, JComponent content) {
+        Content newContent =
+                contentManager
+                        .getFactory()
+                        .createContent(content, generateTitle(component.getDescription()), true);
+        newContent.setTabName(String.valueOf(component.getId()));
+        boolean foundExisting = false;
+        for (int i = 0; i < contentManager.getContentCount(); i++) {
+            Content tab = contentManager.getContent(i);
+            if (!tab.isPinned()) {
+                contentManager.removeContent(tab, true);
+                contentManager.addContent(newContent, i);
+                foundExisting = true;
+                break;
+            }
+        }
+        if (!foundExisting) {
+            contentManager.addContent(newContent);
+        }
+        contentManager.setSelectedContent(newContent);
+        return newContent;
     }
 
     private static Optional<Content> getExistingTab(
