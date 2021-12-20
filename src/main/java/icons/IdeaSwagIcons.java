@@ -2,7 +2,10 @@ package icons;
 
 import javax.swing.Icon;
 
+import com.intellij.icons.AllIcons.Actions;
 import com.intellij.openapi.util.IconLoader;
+
+import de.eudaemon.swag.ComponentDescription;
 
 public interface IdeaSwagIcons {
     Icon Button = IconLoader.getIcon("/icons/button.svg", IdeaSwagIcons.class);
@@ -32,4 +35,61 @@ public interface IdeaSwagIcons {
     Icon Toolbar = IconLoader.getIcon("/icons/toolbar.svg", IdeaSwagIcons.class);
     Icon Tree = IconLoader.getIcon("/icons/tree.svg", IdeaSwagIcons.class);
     Icon Unknown = IconLoader.getIcon("/icons/unknown.svg", IdeaSwagIcons.class);
+
+    static Icon fromDescription(ComponentDescription description) {
+        switch (description.iconKey) {
+            case "button":
+                return Button;
+            case "checkbox":
+                return Checkbox;
+            case "combobox":
+                return Combobox;
+            case "editorPane":
+                return EditorPane;
+            case "formattedTextField":
+                return FormattedTextField;
+            case "label":
+                return Label;
+            case "list":
+                return List;
+            case "panel":
+                return Panel;
+            case "progressbar":
+                return ProgressBar;
+            case "radioButton":
+                return RadioButton;
+            case "scrollbar":
+                return Scrollbar;
+            case "scrollPane":
+                return ScrollPane;
+            case "separator":
+                return Separator;
+            case "slider":
+                return Slider;
+            case "spinner":
+                return Spinner;
+            case "splitPane":
+                return SplitPane;
+            case "tabbedPane":
+                return TabbedPane;
+            case "table":
+                return Table;
+            case "textArea":
+                return TextArea;
+            case "textField":
+                return TextField;
+            case "textPane":
+                return TextPane;
+            case "toolbarSeparator":
+                return ToolbarSeparator;
+            case "toolbar":
+                return Toolbar;
+            case "tree":
+                return Tree;
+            case "window":
+                return Actions.MoveToWindow;
+            default:
+                return Unknown;
+        }
+    }
 }

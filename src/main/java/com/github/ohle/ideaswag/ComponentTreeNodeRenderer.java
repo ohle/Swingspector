@@ -21,7 +21,7 @@ public class ComponentTreeNodeRenderer extends DefaultTreeCellRenderer {
         ComponentTreeNode node = (ComponentTreeNode) value;
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
         setText(Util.generateTitle(node.getInfo().getDescription(node.getNodeId())));
-        setIcon(IdeaSwagIcons.Button);
+        setIcon(IdeaSwagIcons.fromDescription(node.getInfo().getDescription(node.getNodeId())));
         return this;
     }
 }
