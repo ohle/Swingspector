@@ -16,8 +16,11 @@ import com.intellij.execution.configurations.RunProfileState;
 import com.intellij.execution.configurations.RuntimeConfigurationError;
 import com.intellij.execution.configurations.RuntimeConfigurationException;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
+import com.intellij.execution.process.ProcessAdapter;
+import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.runners.ExecutionEnvironment;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.BaseState;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
@@ -49,8 +52,21 @@ public class SwagConfiguration extends ApplicationConfiguration {
     @Override
     public void createAdditionalTabComponents(
             AdditionalTabComponentManager manager, ProcessHandler startedProcess) {
-        manager.addAdditionalTabComponent(
-                new SwagRootsTab(startedProcess.getUserData(Util.INFO_BEAN_KEY)), "SwagTab");
+        SwagRootsTab rootsTab =
+                new SwagRootsTab(startedProcess.getUserData(Util.INFO_BEAN_KEY), getProject());
+        startedProcess.addProcessListener(
+                new ProcessAdapter() {
+                    @Override
+                    public void processTerminated(@NotNull ProcessEvent event) {
+                        ApplicationManager.getApplication()
+                                .invokeLater(
+                                        () -> {
+                                            rootsTab.dispose();
+                                            manager.removeAdditionalTabComponent(rootsTab);
+                                        });
+                    }
+                });
+        manager.addAdditionalTabComponent(rootsTab, "SwagTab");
     }
 
     @Override

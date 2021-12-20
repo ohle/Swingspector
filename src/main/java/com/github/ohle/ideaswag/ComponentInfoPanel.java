@@ -24,9 +24,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.SwingConstants;
 
 import javax.swing.border.EmptyBorder;
 
@@ -44,7 +42,6 @@ import com.intellij.ui.JBSplitter;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTabbedPane;
 import com.intellij.ui.table.JBTable;
-import com.intellij.ui.treeStructure.Tree;
 import com.intellij.unscramble.AnalyzeStacktraceUtil;
 import com.intellij.util.ui.JBInsets;
 import com.intellij.util.ui.JBUI;
@@ -82,7 +79,7 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
         setLayout(new BorderLayout());
         JBSplitter mainSplitter = new JBSplitter(SPLIT_PROPORTION_KEY, .7f);
         JBSplitter splitter = new JBSplitter(RIGHT_SPLIT_PROPORTION_KEY, .5f);
-        splitter.setFirstComponent(createTreeAndPlacementPanel());
+        splitter.setFirstComponent(createPlacementPanel());
         splitter.setSecondComponent(new VisualPanel());
         mainSplitter.setFirstComponent(splitter);
         mainSplitter.setSecondComponent(createPropertiesPanel());
@@ -91,13 +88,6 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
 
     public String getTitle() {
         return title;
-    }
-
-    private JComponent createTreeAndPlacementPanel() {
-        JTabbedPane tabbedPane = new JBTabbedPane(SwingConstants.TOP);
-        tabbedPane.add("Placement", createPlacementPanel());
-        tabbedPane.add("Hierarchy", createTreePanel());
-        return tabbedPane;
     }
 
     @NotNull
@@ -136,13 +126,6 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
                 + Arrays.stream(stackTrace)
                         .map(StackTraceElement::toString)
                         .collect(Collectors.joining("\n     ", "     ", ""));
-    }
-
-    private Component createTreePanel() {
-        ComponentTreeNode root = new ComponentTreeNode(component);
-        Tree tree = new Tree(root);
-        tree.setCellRenderer(new ComponentTreeNodeRenderer());
-        return new JBScrollPane(tree);
     }
 
     private class VisualPanel extends JPanel {

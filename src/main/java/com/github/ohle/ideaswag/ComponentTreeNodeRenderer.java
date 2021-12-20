@@ -21,9 +21,13 @@ public class ComponentTreeNodeRenderer extends DefaultTreeCellRenderer {
             boolean hasFocus) {
         ComponentTreeNode node = (ComponentTreeNode) value;
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-        ComponentDescription description = node.getComponent().getDescription();
-        setText(Util.generateTitle(description));
-        setIcon(IdeaSwagIcons.fromDescription(description));
+        try {
+            ComponentDescription description = node.getComponent().getDescription();
+            setText(Util.generateTitle(description));
+            setIcon(IdeaSwagIcons.fromDescription(description));
+        } catch (Throwable ignored) {
+            // happens while removing tree on dispose, when connection is already down
+        }
         return this;
     }
 }
