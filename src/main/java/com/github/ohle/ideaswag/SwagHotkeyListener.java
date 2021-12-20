@@ -6,18 +6,10 @@ import java.util.Set;
 import javax.management.Notification;
 import javax.management.NotificationListener;
 
-import javax.swing.JPanel;
-
-import com.intellij.icons.AllIcons.Actions;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.wm.RegisterToolWindowTask;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowAnchor;
-import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
-import com.intellij.ui.content.ContentManager;
 
 import de.eudaemon.swag.ComponentInfoMBean;
 
@@ -27,9 +19,7 @@ public class SwagHotkeyListener implements Disposable {
     private final Listener listener;
     private final Project project;
 
-    private static ToolWindow toolWindow = null;
-
-    private final Set<Content> openedTabs = new HashSet<>();
+    private static final Set<Content> openedTabs = new HashSet<>();
 
     public SwagHotkeyListener(ComponentInfoMBean componentInfo_, Project project_) {
         componentInfo = componentInfo_;
@@ -44,7 +34,7 @@ public class SwagHotkeyListener implements Disposable {
                 .invokeLater(
                         () -> {
                             for (Content openedTab : openedTabs) {
-                                toolWindow.getContentManager().removeContent(openedTab, true);
+                                Util.removeComponentTab(openedTab);
                             }
                         });
         try {
@@ -61,47 +51,7 @@ public class SwagHotkeyListener implements Disposable {
         }
 
         private void openToolWindow(int id) {
-            if (toolWindow == null) {
-                registerToolWindow();
-            }
-            ContentManager contentManager = toolWindow.getContentManager();
-            String tabId = String.valueOf(id);
-            for (int i = 0; i < contentManager.getContentCount(); i++) {
-                Content tab = contentManager.getContent(i);
-                if (tabId.equals(tab.getTabName())) {
-                    contentManager.setSelectedContent(tab);
-                    toolWindow.activate(() -> {});
-                    return;
-                }
-            }
-            ComponentInfoPanel infoPanel =
-                    new ComponentInfoPanel(project, new RunningComponent(componentInfo, id));
-            Content tab =
-                    contentManager
-                            .getFactory()
-                            .createContent(infoPanel, infoPanel.getTitle(), true);
-            tab.setTabName(tabId);
-            contentManager.addContent(tab);
-            openedTabs.add(tab);
-            contentManager.setSelectedContent(tab);
-            toolWindow.activate(() -> {});
-        }
-
-        private void registerToolWindow() {
-            toolWindow =
-                    ToolWindowManager.getInstance(project)
-                            .registerToolWindow(
-                                    new RegisterToolWindowTask(
-                                            "Swing Components",
-                                            ToolWindowAnchor.BOTTOM,
-                                            new JPanel(),
-                                            false,
-                                            true,
-                                            true,
-                                            true,
-                                            (project1, toolWindow1) -> {},
-                                            Actions.Search,
-                                            () -> "Swing Components"));
+            openedTabs.add(Util.openComponentTab(new RunningComponent(componentInfo, id, project)));
         }
     }
 }

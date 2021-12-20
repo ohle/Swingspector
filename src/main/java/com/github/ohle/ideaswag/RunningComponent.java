@@ -4,6 +4,8 @@ import java.util.Collection;
 
 import java.util.stream.Collectors;
 
+import com.intellij.openapi.project.Project;
+
 import de.eudaemon.swag.ComponentDescription;
 import de.eudaemon.swag.ComponentInfoMBean;
 import de.eudaemon.swag.ComponentProperty;
@@ -14,21 +16,24 @@ import de.eudaemon.swag.SizeInfos;
 public class RunningComponent {
     private final ComponentInfoMBean connectedBean;
     private final int componentId;
+    private final Project project;
 
-    public RunningComponent(ComponentInfoMBean connectedBean_, int componentId_) {
+    public RunningComponent(ComponentInfoMBean connectedBean_, int componentId_, Project project_) {
         connectedBean = connectedBean_;
         componentId = componentId_;
+        project = project_;
     }
 
-    public static Collection<RunningComponent> getRoots(ComponentInfoMBean infoBean) {
+    public static Collection<RunningComponent> getRoots(
+            ComponentInfoMBean infoBean, Project project) {
         return infoBean.getRoots().stream()
-                .map(rootId -> new RunningComponent(infoBean, rootId))
+                .map(rootId -> new RunningComponent(infoBean, rootId, project))
                 .collect(Collectors.toSet());
     }
 
     public Collection<RunningComponent> getChildren() {
         return connectedBean.getChildren(componentId).stream()
-                .map(id -> new RunningComponent(connectedBean, id))
+                .map(id -> new RunningComponent(connectedBean, id, project))
                 .collect(Collectors.toSet());
     }
 
@@ -41,7 +46,7 @@ public class RunningComponent {
     }
 
     public RunningComponent getParent() {
-        return new RunningComponent(connectedBean, connectedBean.getParent(componentId));
+        return new RunningComponent(connectedBean, connectedBean.getParent(componentId), project);
     }
 
     public ComponentDescription getDescription() {
@@ -54,5 +59,13 @@ public class RunningComponent {
 
     public PlacementInfo getPlacementInfo() {
         return connectedBean.getPlacementInfo(componentId);
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public int getId() {
+        return componentId;
     }
 }

@@ -38,6 +38,7 @@ import com.intellij.execution.ui.ConsoleView;
 import com.intellij.icons.AllIcons.Actions;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.JBSplitter;
 import com.intellij.ui.components.JBScrollPane;
@@ -74,9 +75,9 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
     @Override
     public void dispose() {}
 
-    public ComponentInfoPanel(Project project_, RunningComponent component_) {
+    public ComponentInfoPanel(RunningComponent component_) {
         component = component_;
-        project = project_;
+        project = component_.getProject();
         title = Util.generateTitle(component.getDescription());
         setLayout(new BorderLayout());
         JBSplitter mainSplitter = new JBSplitter(SPLIT_PROPORTION_KEY, .7f);
@@ -105,6 +106,7 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
                 TextConsoleBuilderFactory.getInstance().createBuilder(project);
         builder.filters(AnalyzeStacktraceUtil.EP_NAME.getExtensions(project));
         final ConsoleView consoleView = builder.getConsole();
+        Disposer.register(this, consoleView);
         consoleView.allowHeavyFilters();
         AnalyzeStacktraceUtil.printStacktrace(consoleView, getStackTraceAsText());
         return consoleView.getComponent();
