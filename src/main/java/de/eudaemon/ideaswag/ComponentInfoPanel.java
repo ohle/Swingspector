@@ -99,7 +99,9 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
         Disposer.register(this, consoleView);
         consoleView.allowHeavyFilters();
         AnalyzeStacktraceUtil.printStacktrace(consoleView, getStackTraceAsText());
-        return consoleView.getComponent();
+        JComponent component = consoleView.getComponent();
+        consoleView.scrollTo(0);
+        return component;
     }
 
     private String getStackTraceAsText() {
