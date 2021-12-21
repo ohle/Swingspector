@@ -6,7 +6,6 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import com.intellij.application.options.ModuleDescriptionsComboBox;
 import com.intellij.execution.ui.CommonJavaParametersPanel;
@@ -15,6 +14,7 @@ import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.LabeledComponent;
+import com.intellij.ui.EditorTextFieldWithBrowseButton;
 import com.intellij.ui.PanelWithAnchor;
 import com.intellij.util.ui.JBInsets;
 import com.intellij.util.ui.JBUI;
@@ -28,7 +28,7 @@ public class SwagConfigurable extends SettingsEditor<SwagConfiguration> implemen
     private final CommonJavaParametersPanel commonPanel;
     private final ConfigurationModuleSelector moduleSelector;
     private final LabeledComponent<ModuleDescriptionsComboBox> module;
-    private final LabeledComponent<JTextField> mainClass;
+    private final LabeledComponent<EditorTextFieldWithBrowseButton> mainClass;
     private final JPanel mainPanel;
     private JComponent anchor;
 
@@ -39,7 +39,7 @@ public class SwagConfigurable extends SettingsEditor<SwagConfiguration> implemen
         mainClass = new LabeledComponent<>();
         mainClass.setLabelLocation(BorderLayout.WEST);
         mainClass.setText("Main class");
-        mainClass.setComponent(new JTextField());
+        mainClass.setComponent(new EditorTextFieldWithBrowseButton(project, true));
 
         shortcutField = new LabeledComponent<>();
         shortcutField.setLabelLocation(BorderLayout.WEST);
