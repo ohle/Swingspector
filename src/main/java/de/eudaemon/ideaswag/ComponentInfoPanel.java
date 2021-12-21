@@ -300,13 +300,15 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
         }
 
         private Dimension getCroppedMaximumSize() {
+            int w = Math.max(sizing.actualSize.width, sizing.minimumSize.size.width);
+            int h = Math.max(sizing.actualSize.height, sizing.maximumSize.size.height);
             int croppedWidth =
-                    sizing.maximumSize.size.width - sizing.actualSize.width > SIZE_CUTOFF
-                            ? sizing.actualSize.width + SIZE_CUTOFF
+                    sizing.maximumSize.size.width - w > SIZE_CUTOFF
+                            ? w + SIZE_CUTOFF
                             : sizing.maximumSize.size.width;
             int croppedHeight =
-                    sizing.maximumSize.size.height - sizing.actualSize.height > SIZE_CUTOFF
-                            ? sizing.actualSize.height + SIZE_CUTOFF
+                    sizing.maximumSize.size.height - h > SIZE_CUTOFF
+                            ? h + SIZE_CUTOFF
                             : sizing.maximumSize.size.width;
             return new Dimension(croppedWidth, croppedHeight);
         }
