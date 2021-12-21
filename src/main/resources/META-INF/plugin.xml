@@ -12,6 +12,29 @@
         <themeMetadataProvider path="/META-INF/idea-swag.themeMetadata.json"/>
     </extensions>
 
+    <actions>
+        <group id="IdeaSWAG.TreeView" description="IdeaSWAG Tree View">
+            <action id="IdeaSWAG.CollapseTreeNodes"
+                    class="com.github.ohle.ideaswag.TreeViewActions$CollapseAll"
+                    description="Collapse all tree nodes" text="Collapse all tree nodes"
+                    icon="AllIcons.Actions.Collapseall"/>
+            <action id="IdeaSWAG.ExpandTreeNodes"
+                    class="com.github.ohle.ideaswag.TreeViewActions$ExpandAll"
+                    description="Expand all tree nodes" text="Expand all tree nodes"
+                    icon="AllIcons.Actions.Expandall"/>
+            <separator/>
+            <action id="IdeaSWAG.LocateComponent"
+                    class="com.github.ohle.ideaswag.TreeViewActions$LocateSelected"
+                    description="Open selected component" text="Open selected component"
+                    icon="AllIcons.General.Locate"/>
+            <action id="IdeaSWAG.AutoLocate"
+                    class="com.github.ohle.ideaswag.TreeViewActions$AutoLocate"
+                    description="Automatically open selected component"
+                    text="Automatically open selected component"
+                    icon="AllIcons.General.AutoscrollToSource"/>
+        </group>
+
+    </actions>
     <applicationListeners>
     </applicationListeners>
 </idea-plugin>
