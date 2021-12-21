@@ -35,6 +35,11 @@ import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.icons.AllIcons.Actions;
 import com.intellij.openapi.Disposable;
+import com.intellij.openapi.actionSystem.ActionGroup;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.ActionPlaces;
+import com.intellij.openapi.actionSystem.ActionToolbar;
+import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.ui.JBColor;
@@ -95,15 +100,24 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
     private JComponent createPlacementPanel() {
         final TextConsoleBuilder builder =
                 TextConsoleBuilderFactory.getInstance().createBuilder(project);
+        JPanel panel = new JPanel(new BorderLayout());
         builder.filters(AnalyzeStacktraceUtil.EP_NAME.getExtensions(project));
         final ConsoleView consoleView = builder.getConsole();
         Disposer.register(this, consoleView);
         consoleView.allowHeavyFilters();
         AnalyzeStacktraceUtil.printStacktrace(consoleView, getStackTraceAsText());
-        JComponent component = consoleView.getComponent();
+        JComponent console = consoleView.getComponent();
         Disposer.register(this, consoleView);
         consoleView.scrollTo(0);
-        return component;
+        panel.add(console, BorderLayout.CENTER);
+        AnAction actionGroup = ActionManager.getInstance().getAction("IdeaSWAG.ComponentView");
+        ActionToolbar toolBar =
+                ActionManager.getInstance()
+                        .createActionToolbar(
+                                ActionPlaces.TOOLWINDOW_CONTENT, (ActionGroup) actionGroup, false);
+        toolBar.setTargetComponent(this);
+        add(toolBar.getComponent(), BorderLayout.WEST);
+        return panel;
     }
 
     private String getStackTraceAsText() {
@@ -130,6 +144,10 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
                 + Arrays.stream(stackTrace)
                         .map(StackTraceElement::toString)
                         .collect(Collectors.joining("\n     ", "     ", ""));
+    }
+
+    public RunningComponent getRunningComponent() {
+        return component;
     }
 
     private class VisualPanel extends JPanel {

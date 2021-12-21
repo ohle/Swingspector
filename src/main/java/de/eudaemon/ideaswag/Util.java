@@ -47,6 +47,19 @@ public class Util {
         return sb.toString();
     }
 
+    public static Optional<RunningComponent> getOpenComponentTab() {
+        return Optional.ofNullable(componentToolWindow.getContentManager().getSelectedContent())
+                .map(Content::getComponent)
+                .map(ComponentInfoPanel.class::cast)
+                .map(ComponentInfoPanel::getRunningComponent);
+    }
+
+    public static Optional<TreeViewPanel> getOpenTreeTab() {
+        return Optional.ofNullable(treeToolWindow.getContentManager().getSelectedContent())
+                .map(Content::getComponent)
+                .map(TreeViewPanel.class::cast);
+    }
+
     public static Content openTreeTab(RunningComponent component) {
         if (treeToolWindow == null) {
             registerTreeToolWindow(component.getProject());

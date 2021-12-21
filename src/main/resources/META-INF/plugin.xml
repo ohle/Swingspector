@@ -13,25 +13,31 @@
     </extensions>
 
     <actions>
-        <group id="IdeaSWAG.TreeView" description="IdeaSWAG Tree View">
+        <group id="IdeaSWAG.TreeView" description="IdeaSWAG tree view">
             <action id="IdeaSWAG.CollapseTreeNodes"
                     class="de.eudaemon.ideaswag.TreeViewActions$CollapseAll"
-                    description="Collapse all tree nodes" text="Collapse all tree nodes"
+                    description="Collapse all tree nodes" text="Collapse All Tree Nodes"
                     icon="AllIcons.Actions.Collapseall"/>
             <action id="IdeaSWAG.ExpandTreeNodes"
                     class="de.eudaemon.ideaswag.TreeViewActions$ExpandAll"
-                    description="Expand all tree nodes" text="Expand all tree nodes"
+                    description="Expand all tree nodes" text="Expand All Tree Nodes"
                     icon="AllIcons.Actions.Expandall"/>
             <separator/>
             <action id="IdeaSWAG.LocateComponent"
                     class="de.eudaemon.ideaswag.TreeViewActions$LocateSelected"
-                    description="Open selected component" text="Open selected component"
+                    description="Open selected component" text="Open Selected Component"
                     icon="AllIcons.General.Locate"/>
             <action id="IdeaSWAG.AutoLocate"
                     class="de.eudaemon.ideaswag.TreeViewActions$AutoLocate"
                     description="Automatically open selected component"
-                    text="Automatically open selected component"
+                    text="Automatically Open Selected Component"
                     icon="AllIcons.General.AutoscrollToSource"/>
+        </group>
+        <group id="IdeaSWAG.ComponentView" description="IdeaSWAG component view">
+            <action id="IdeaSWAG.OpenInTreeView"
+                    class="de.eudaemon.ideaswag.ComponentViewActions$OpenInTree"
+                    description="Open this component in tree view" text="Open In Tree View"
+                    icon="AllIcons.General.Locate"/>
         </group>
 
     </actions>

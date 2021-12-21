@@ -14,7 +14,9 @@ import com.intellij.openapi.actionSystem.ActionPlaces;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.ui.components.JBScrollPane;
+import com.intellij.ui.tree.TreeVisitor.Action;
 import com.intellij.ui.treeStructure.Tree;
+import com.intellij.util.ui.tree.TreeUtil;
 
 public class TreeViewPanel extends JPanel {
 
@@ -48,15 +50,11 @@ public class TreeViewPanel extends JPanel {
     }
 
     public void expandAll() {
-        for (int i = 0; i < tree.getRowCount(); i++) {
-            tree.expandRow(i);
-        }
+        TreeUtil.expandAll(tree);
     }
 
     public void collapseAll() {
-        for (int i = 0; i < tree.getRowCount(); i++) {
-            tree.collapseRow(i);
-        }
+        TreeUtil.collapseAll(tree, -1);
     }
 
     public void locateSelected() {
@@ -79,5 +77,18 @@ public class TreeViewPanel extends JPanel {
     public void setAutoLocate(boolean state) {
         autoLocateOn = state;
         autoLocate();
+    }
+
+    public void selectComponent(RunningComponent rc) {
+        TreeUtil.promiseSelect(
+                tree,
+                path -> {
+                    if (((ComponentTreeNode) path.getLastPathComponent()).getComponent().getId()
+                            == rc.getId()) {
+                        tree.setSelectionPath(path);
+                        return Action.INTERRUPT;
+                    }
+                    return Action.CONTINUE;
+                });
     }
 }

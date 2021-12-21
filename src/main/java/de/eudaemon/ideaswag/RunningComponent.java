@@ -68,4 +68,8 @@ public class RunningComponent {
     public int getId() {
         return componentId;
     }
+
+    public RunningComponent getRoot() {
+        return new RunningComponent(connectedBean, connectedBean.getRoot(componentId), project);
+    }
 }
