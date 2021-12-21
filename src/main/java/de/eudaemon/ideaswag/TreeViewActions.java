@@ -1,4 +1,4 @@
-package com.github.ohle.ideaswag;
+package de.eudaemon.ideaswag;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;

@@ -1,34 +1,34 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.ohle.ideaswag</id>
+    <id>de.eudaemon.ideaswag</id>
     <name>idea-swag</name>
-    <vendor>ohle</vendor>
+    <vendor>Ohle Claussen</vendor>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <configurationType implementation="com.github.ohle.ideaswag.SwagConfigurationType"/>
+        <configurationType implementation="de.eudaemon.ideaswag.SwagConfigurationType"/>
         <themeMetadataProvider path="/META-INF/idea-swag.themeMetadata.json"/>
     </extensions>
 
     <actions>
         <group id="IdeaSWAG.TreeView" description="IdeaSWAG Tree View">
             <action id="IdeaSWAG.CollapseTreeNodes"
-                    class="com.github.ohle.ideaswag.TreeViewActions$CollapseAll"
+                    class="de.eudaemon.ideaswag.TreeViewActions$CollapseAll"
                     description="Collapse all tree nodes" text="Collapse all tree nodes"
                     icon="AllIcons.Actions.Collapseall"/>
             <action id="IdeaSWAG.ExpandTreeNodes"
-                    class="com.github.ohle.ideaswag.TreeViewActions$ExpandAll"
+                    class="de.eudaemon.ideaswag.TreeViewActions$ExpandAll"
                     description="Expand all tree nodes" text="Expand all tree nodes"
                     icon="AllIcons.Actions.Expandall"/>
             <separator/>
             <action id="IdeaSWAG.LocateComponent"
-                    class="com.github.ohle.ideaswag.TreeViewActions$LocateSelected"
+                    class="de.eudaemon.ideaswag.TreeViewActions$LocateSelected"
                     description="Open selected component" text="Open selected component"
                     icon="AllIcons.General.Locate"/>
             <action id="IdeaSWAG.AutoLocate"
-                    class="com.github.ohle.ideaswag.TreeViewActions$AutoLocate"
+                    class="de.eudaemon.ideaswag.TreeViewActions$AutoLocate"
                     description="Automatically open selected component"
                     text="Automatically open selected component"
                     icon="AllIcons.General.AutoscrollToSource"/>

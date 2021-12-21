@@ -1,4 +1,4 @@
-package com.github.ohle.ideaswag;
+package de.eudaemon.ideaswag;
 
 import java.util.concurrent.CompletableFuture;
 

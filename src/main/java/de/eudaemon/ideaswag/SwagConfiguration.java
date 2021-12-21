@@ -1,4 +1,4 @@
-package com.github.ohle.ideaswag;
+package de.eudaemon.ideaswag;
 
 import java.awt.event.KeyEvent;
 
@@ -98,7 +98,7 @@ public class SwagConfiguration extends ApplicationConfiguration {
 
         @Override
         public @NotNull @NonNls String getId() {
-            return "com.github.ohle.ideaswag";
+            return "de.eudaemon.ideaswag";
         }
 
         @Override

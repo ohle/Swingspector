@@ -1,4 +1,4 @@
-package com.github.ohle.ideaswag;
+package de.eudaemon.ideaswag;
 
 import java.util.Optional;
 
@@ -27,7 +27,7 @@ public class Util {
     private static ToolWindow componentToolWindow = null;
     private static ToolWindow treeToolWindow = null;
     public static final Key<CompletableFuture<ComponentInfoMBean>> INFO_BEAN_KEY =
-            Key.create("com.github.ohle.ideaswag.info-bean");
+            Key.create("de.eudaemon.ideaswag.info-bean");
 
     public static String generateTitle(ComponentDescription description) {
         StringBuilder sb = new StringBuilder();
