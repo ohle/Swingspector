@@ -322,7 +322,7 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
 
         private Dimension getCroppedMaximumSize() {
             int w = Math.max(sizing.actualSize.width, sizing.minimumSize.size.width);
-            int h = Math.max(sizing.actualSize.height, sizing.maximumSize.size.height);
+            int h = Math.max(sizing.actualSize.height, sizing.minimumSize.size.height);
             int croppedWidth =
                     sizing.maximumSize.size.width - w > SIZE_CUTOFF
                             ? w + SIZE_CUTOFF
