@@ -4,6 +4,11 @@ import java.util.Optional;
 
 import java.awt.BorderLayout;
 
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 import javax.swing.JPanel;
 
 import javax.swing.tree.TreeSelectionModel;
@@ -34,6 +39,24 @@ public class TreeViewPanel extends JPanel {
         setLayout(new BorderLayout());
         add(new JBScrollPane(tree), BorderLayout.CENTER);
 
+        tree.addMouseListener(
+                new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if (e.getClickCount() == 2) {
+                            locateSelected();
+                        }
+                    }
+                });
+        tree.addKeyListener(
+                new KeyAdapter() {
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+                        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                            locateSelected();
+                        }
+                    }
+                });
         AnAction actionGroup = ActionManager.getInstance().getAction("IdeaSWAG.TreeView");
         ActionToolbar toolBar =
                 ActionManager.getInstance()
