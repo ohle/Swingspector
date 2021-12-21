@@ -1,5 +1,7 @@
 package de.eudaemon.ideaswag;
 
+import java.util.Objects;
+
 import java.awt.event.KeyEvent;
 
 import javax.swing.KeyStroke;
@@ -53,7 +55,9 @@ public class SwagConfiguration extends ApplicationConfiguration {
     public void createAdditionalTabComponents(
             AdditionalTabComponentManager manager, ProcessHandler startedProcess) {
         SwagRootsTab rootsTab =
-                new SwagRootsTab(startedProcess.getUserData(Util.INFO_BEAN_KEY), getProject());
+                new SwagRootsTab(
+                        Objects.requireNonNull(startedProcess.getUserData(Util.INFO_BEAN_KEY)),
+                        getProject());
         startedProcess.addProcessListener(
                 new ProcessAdapter() {
                     @Override

@@ -24,7 +24,6 @@ import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.NlsContexts.TabTitle;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBScrollPane;
@@ -90,7 +89,7 @@ public class SwagRootsTab extends AdditionalTabComponent implements Disposable {
     }
 
     @Override
-    public @NotNull @TabTitle String getTabTitle() {
+    public @NotNull String getTabTitle() {
         return "Swag";
     }
 

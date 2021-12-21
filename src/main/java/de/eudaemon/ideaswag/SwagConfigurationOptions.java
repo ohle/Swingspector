@@ -14,6 +14,7 @@ public class SwagConfigurationOptions extends JvmMainMethodRunConfigurationOptio
             property(0).provideDelegate(this, "keyModifiers");
 
     public KeyStroke getKeyStroke() {
+        //noinspection MagicConstant
         return KeyStroke.getKeyStroke(keyCode.getValue(this), modifiers.getValue(this));
     }
 

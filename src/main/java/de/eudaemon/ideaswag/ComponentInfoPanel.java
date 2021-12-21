@@ -244,7 +244,7 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
         }
     }
 
-    private class Visualization extends JPanel {
+    private static class Visualization extends JPanel {
 
         private static final int SIZE_CUTOFF = 200;
 

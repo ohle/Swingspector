@@ -1,5 +1,6 @@
 package de.eudaemon.ideaswag;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import java.util.concurrent.CompletableFuture;
@@ -90,7 +91,7 @@ public class Util {
         newContent.setTabName(String.valueOf(component.getId()));
         boolean foundExisting = false;
         for (int i = 0; i < contentManager.getContentCount(); i++) {
-            Content tab = contentManager.getContent(i);
+            Content tab = Objects.requireNonNull(contentManager.getContent(i));
             if (!tab.isPinned()) {
                 contentManager.removeContent(tab, true);
                 contentManager.addContent(newContent, i);
@@ -109,7 +110,7 @@ public class Util {
             ContentManager manager, RunningComponent component) {
         String tabId = String.valueOf(component.getId());
         for (int i = 0; i < manager.getContentCount(); i++) {
-            Content tab = manager.getContent(i);
+            Content tab = Objects.requireNonNull(manager.getContent(i));
             if (tabId.equals(tab.getTabName())) {
                 manager.setSelectedContent(tab);
                 return Optional.of(tab);

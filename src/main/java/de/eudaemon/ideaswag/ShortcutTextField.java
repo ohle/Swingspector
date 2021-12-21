@@ -19,7 +19,6 @@ import javax.swing.text.DefaultCaret;
 import com.intellij.icons.AllIcons.General;
 import com.intellij.openapi.keymap.KeymapUtil;
 import com.intellij.openapi.ui.JBPopupMenu;
-import com.intellij.openapi.util.NlsContexts;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.ui.KeyStrokeAdapter;
 import com.intellij.ui.components.fields.ExtendableTextField;
@@ -158,7 +157,7 @@ public final class ShortcutTextField extends ExtendableTextField {
     }
 
     @NotNull
-    private @NlsContexts.Tooltip String getPopupTooltip() {
+    private String getPopupTooltip() {
         StringBuilder sb = new StringBuilder();
         String prefix = "";
         for (KeyStroke stroke : getKeyStrokes()) {

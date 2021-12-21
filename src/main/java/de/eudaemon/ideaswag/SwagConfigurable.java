@@ -43,7 +43,7 @@ public class SwagConfigurable extends SettingsEditor<SwagConfiguration> implemen
 
         shortcutField = new LabeledComponent<>();
         shortcutField.setLabelLocation(BorderLayout.WEST);
-        shortcutField.setText("Keyboard Shortcut");
+        shortcutField.setText("Keyboard shortcut");
         shortcutField.setComponent(new ShortcutTextField(false));
 
         module = new LabeledComponent<>();

@@ -6,8 +6,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import java.io.IOException;
 
-import java.net.ServerSocket;
-
 import java.nio.file.Path;
 
 import javax.swing.KeyStroke;
@@ -23,6 +21,7 @@ import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.intellij.util.net.NetUtils;
 
 import de.eudaemon.swag.ComponentInfoMBean;
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +48,7 @@ public class SwagApplicationCommandLineState
         CompletableFuture<ComponentInfoMBean> infoBeanFuture = new CompletableFuture<>();
         processHandler.putUserData(Util.INFO_BEAN_KEY, infoBeanFuture);
         processHandler.addProcessListener(
-                new ProcessListener(port, getConfiguration().getProject(), infoBeanFuture));
+                new ConnectListener(port, getConfiguration().getProject(), infoBeanFuture));
         return processHandler;
     }
 
@@ -84,24 +83,13 @@ public class SwagApplicationCommandLineState
 
     private int findFreePort() {
         try {
-            final ServerSocket socket = new ServerSocket(0);
-            try {
-                return socket.getLocalPort();
-            } finally {
-                synchronized (socket) {
-                    try {
-                        socket.wait(1);
-                    } catch (Throwable ignored) {
-                    }
-                }
-                socket.close();
-            }
+            return NetUtils.findAvailableSocketPort();
         } catch (IOException e) {
             throw new RuntimeException("Couldn't find a free port", e);
         }
     }
 
-    private static class ProcessListener extends ProcessAdapter {
+    private static class ConnectListener extends ProcessAdapter {
         private final int port;
         private final Project project;
         private final CompletableFuture<ComponentInfoMBean> infoBeanFuture;
@@ -111,7 +99,7 @@ public class SwagApplicationCommandLineState
         private final AtomicInteger tries = new AtomicInteger(0);
         private final Timer retryTimer = new Timer(500, a -> tryToConect());
 
-        public ProcessListener(
+        public ConnectListener(
                 int port_,
                 Project project_,
                 CompletableFuture<ComponentInfoMBean> infoBeanFuture_) {
