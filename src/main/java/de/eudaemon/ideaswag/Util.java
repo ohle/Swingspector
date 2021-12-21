@@ -65,19 +65,23 @@ public class Util {
     }
 
     public static Content openComponentTab(RunningComponent component) {
+        return openComponentTab(component, () -> {});
+    }
+
+    public static Content openComponentTab(RunningComponent component, Runnable runnable) {
         if (componentToolWindow == null) {
             registerComponentToolWindow(component.getProject());
         }
         ContentManager contentManager = componentToolWindow.getContentManager();
         Optional<Content> existingTab = getExistingTab(contentManager, component);
         if (existingTab.isPresent()) {
-            componentToolWindow.activate(() -> {});
+            componentToolWindow.activate(runnable);
             return existingTab.get();
         } else {
             Content tab =
                     createOrReplaceTab(
                             component, contentManager, new ComponentInfoPanel(component));
-            componentToolWindow.activate(() -> {});
+            componentToolWindow.activate(runnable);
             return tab;
         }
     }

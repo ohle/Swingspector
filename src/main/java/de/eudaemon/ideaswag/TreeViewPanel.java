@@ -28,12 +28,7 @@ public class TreeViewPanel extends JPanel {
         tree = new Tree(rootNode);
         tree.setCellRenderer(new ComponentTreeNodeRenderer());
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        tree.addTreeSelectionListener(
-                e -> {
-                    if (autoLocateOn) {
-                        locateSelected();
-                    }
-                });
+        tree.addTreeSelectionListener(e -> autoLocate());
         setLayout(new BorderLayout());
         add(new JBScrollPane(tree), BorderLayout.CENTER);
 
@@ -44,6 +39,12 @@ public class TreeViewPanel extends JPanel {
                                 ActionPlaces.TOOLWINDOW_CONTENT, (ActionGroup) actionGroup, true);
         toolBar.setTargetComponent(this);
         add(toolBar.getComponent(), BorderLayout.NORTH);
+    }
+
+    private void autoLocate() {
+        if (autoLocateOn) {
+            getSelectedComponent().ifPresent(c -> Util.openComponentTab(c, tree::requestFocus));
+        }
     }
 
     public void expandAll() {
@@ -77,5 +78,6 @@ public class TreeViewPanel extends JPanel {
 
     public void setAutoLocate(boolean state) {
         autoLocateOn = state;
+        autoLocate();
     }
 }
