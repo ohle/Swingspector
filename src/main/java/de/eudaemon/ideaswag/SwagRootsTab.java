@@ -49,7 +49,7 @@ public class SwagRootsTab extends AdditionalTabComponent implements Disposable {
         rootsList = createList();
         infoBean.thenAcceptAsync(this::init, ApplicationManager.getApplication()::invokeLater);
         setLayout(new BorderLayout());
-        add(new JBLabel("Roots", ComponentStyle.LARGE), BorderLayout.NORTH);
+        add(new JBLabel("SWAG root windows", ComponentStyle.LARGE), BorderLayout.NORTH);
         add(new JBScrollPane(rootsList), BorderLayout.CENTER);
     }
 
@@ -90,7 +90,7 @@ public class SwagRootsTab extends AdditionalTabComponent implements Disposable {
 
     @Override
     public @NotNull String getTabTitle() {
-        return "Swag";
+        return "Windows";
     }
 
     @Override
