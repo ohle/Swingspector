@@ -48,6 +48,7 @@ import com.intellij.util.ui.JBUI;
 
 import de.eudaemon.swag.ComponentProperty;
 import de.eudaemon.swag.PlacementInfo;
+import de.eudaemon.swag.SerializableImage;
 import de.eudaemon.swag.SizeInfos;
 import org.jetbrains.annotations.NotNull;
 
@@ -100,6 +101,7 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
         consoleView.allowHeavyFilters();
         AnalyzeStacktraceUtil.printStacktrace(consoleView, getStackTraceAsText());
         JComponent component = consoleView.getComponent();
+        Disposer.register(this, consoleView);
         consoleView.scrollTo(0);
         return component;
     }
@@ -137,11 +139,10 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
         private VisualPanel() {
             setLayout(new BorderLayout());
             sizeInfos = component.getSizeInfos();
+            SerializableImage snapshot = component.getSnapshot();
+            BufferedImage img = snapshot == null ? null : snapshot.getImage();
             add(createSizeTablePanel(), BorderLayout.NORTH);
-            add(
-                    new JBScrollPane(
-                            new Visualization(sizeInfos, component.getSnapshot().getImage())),
-                    BorderLayout.CENTER);
+            add(new JBScrollPane(new Visualization(sizeInfos, img)), BorderLayout.CENTER);
         }
 
         private Component createSizeTablePanel() {
@@ -271,7 +272,9 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
         @Override
         protected void paintComponent(Graphics g) {
             Graphics2D g2d = (Graphics2D) g;
-            g2d.drawImage(snapshot, 0, 0, null);
+            if (snapshot != null) {
+                g2d.drawImage(snapshot, 0, 0, null);
+            }
             g2d.setColor(MAX_SIZE_COLOR);
             if (isMaximumSizeCropped()) {
                 g2d.setStroke(croppedStroke);
