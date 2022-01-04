@@ -19,6 +19,7 @@ import com.intellij.execution.process.OSProcessHandler;
 import com.intellij.execution.process.ProcessAdapter;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.runners.ExecutionEnvironment;
+import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.net.NetUtils;
@@ -73,11 +74,7 @@ public class SwagApplicationCommandLineState
 
     private String findAgentJar() {
         Path agentJarPath =
-                Path.of(
-                        System.getProperty("idea.plugins.path"),
-                        "idea-swag",
-                        "lib",
-                        "swag-1.2.jar");
+                Path.of(PathManager.getPluginsPath(), "idea-swag", "lib", "swag-1.2.jar");
         return agentJarPath.toFile().getAbsolutePath();
     }
 
