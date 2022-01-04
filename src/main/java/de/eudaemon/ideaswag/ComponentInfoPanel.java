@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -42,7 +43,6 @@ import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
-import com.intellij.ui.JBColor;
 import com.intellij.ui.JBSplitter;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTabbedPane;
@@ -64,12 +64,9 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
     private static final String RIGHT_SPLIT_PROPORTION_KEY =
             "de.eudaemon.idea-swag.component-info-panel.right-split-proportion";
 
-    static final JBColor MIN_SIZE_COLOR =
-            JBColor.namedColor("IDEASwag.MinSize.foreground", 0x268bd2);
-    static final JBColor PREF_SIZE_COLOR =
-            JBColor.namedColor("IDEASwag.PrefSize.foreground", 0x859900);
-    static final JBColor MAX_SIZE_COLOR =
-            JBColor.namedColor("IDEASwag.MaxSize.foreground", 0xd33682);
+    static final Color MIN_SIZE_COLOR = new Color(0x268bd2);
+    static final Color PREF_SIZE_COLOR = new Color(0x859900);
+    static final Color MAX_SIZE_COLOR = new Color(0xd33682);
 
     private final RunningComponent component;
     private final Project project;
@@ -229,14 +226,14 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
             c.insets = oldInsets;
         }
 
-        private void addCircle(JPanel container, JBColor color, GridBagConstraints c) {
+        private void addCircle(JPanel container, Color color, GridBagConstraints c) {
             int oldAnchor = c.anchor;
             c.anchor = GridBagConstraints.CENTER;
             container.add(circle(color), c);
             c.anchor = oldAnchor;
         }
 
-        private Component circle(JBColor color) {
+        private Component circle(Color color) {
             return new JPanel() {
                 @Override
                 protected void paintComponent(Graphics g) {
