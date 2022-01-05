@@ -1,8 +1,5 @@
 package de.eudaemon.ideaswag;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import java.util.concurrent.CompletableFuture;
 
 import java.awt.BorderLayout;
@@ -27,7 +24,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBScrollPane;
-import com.intellij.ui.content.Content;
 import com.intellij.util.ui.UIUtil.ComponentStyle;
 
 import de.eudaemon.swag.ComponentInfoMBean;
@@ -36,16 +32,19 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SwagRootsTab extends AdditionalTabComponent implements Disposable {
+public class SwagRootsTab extends AdditionalTabComponent {
 
     private final JBList<RunningComponent> rootsList;
     private final DefaultListModel<RunningComponent> roots = new DefaultListModel<>();
     private final Project project;
+    private final Disposable disposer;
 
-    private final Set<Content> openedTabs = new HashSet<>();
-
-    public SwagRootsTab(CompletableFuture<ComponentInfoMBean> infoBean, Project project_) {
+    public SwagRootsTab(
+            CompletableFuture<ComponentInfoMBean> infoBean,
+            Project project_,
+            Disposable disposer_) {
         project = project_;
+        disposer = disposer_;
         rootsList = createList();
         infoBean.thenAcceptAsync(this::init, ApplicationManager.getApplication()::invokeLater);
         setLayout(new BorderLayout());
@@ -85,7 +84,7 @@ public class SwagRootsTab extends AdditionalTabComponent implements Disposable {
     }
 
     private void openSelectedTree() {
-        openedTabs.add(Util.openTreeTab(roots.get(rootsList.getSelectedIndex())));
+        Util.openTreeTab(roots.get(rootsList.getSelectedIndex()), disposer);
     }
 
     @Override
@@ -99,9 +98,7 @@ public class SwagRootsTab extends AdditionalTabComponent implements Disposable {
     }
 
     @Override
-    public void dispose() {
-        openedTabs.forEach(Util::removeTreeTab);
-    }
+    public void dispose() {}
 
     @Override
     public @Nullable ActionGroup getToolbarActions() {
