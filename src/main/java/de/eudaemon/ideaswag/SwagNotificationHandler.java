@@ -15,6 +15,7 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 
@@ -44,7 +45,7 @@ public class SwagNotificationHandler {
         return Holder.INSTANCE;
     }
 
-    public ComponentInfoMBean startListeningTo(int port, Project project) {
+    public ComponentInfoMBean startListeningTo(int port, Project project, Disposable disposer) {
         try {
             Map<String, Object> connectionEnvironment = new HashMap<>();
             // JMX uses the thread's context classloader to deserialize objects. Since this
@@ -59,7 +60,7 @@ public class SwagNotificationHandler {
             ComponentInfoMBean componentInfo =
                     MBeanServerInvocationHandler.newProxyInstance(
                             connection, beanName, ComponentInfoMBean.class, true);
-            hotkeyListeners.put(port, new SwagHotkeyListener(componentInfo, project));
+            hotkeyListeners.put(port, new SwagHotkeyListener(componentInfo, project, disposer));
             return componentInfo;
         } catch (IOException e_) {
             return null;

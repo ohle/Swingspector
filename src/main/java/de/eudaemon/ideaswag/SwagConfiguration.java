@@ -22,10 +22,14 @@ import com.intellij.execution.process.ProcessAdapter;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.runners.ExecutionEnvironment;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.BaseState;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Disposer;
+import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.KeyWithDefaultValue;
 
 import org.jdom.Element;
 import org.jetbrains.annotations.NonNls;
@@ -33,6 +37,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SwagConfiguration extends ApplicationConfiguration {
+
+    public static Key<Disposable> PROCESS_DISPOSER =
+            KeyWithDefaultValue.create("swag-process-disposer", Disposer::newDisposable);
 
     protected SwagConfiguration(@NotNull Project project, @NotNull ConfigurationFactory factory) {
         super("Swag Application", project, factory);
@@ -55,10 +62,12 @@ public class SwagConfiguration extends ApplicationConfiguration {
     @Override
     public void createAdditionalTabComponents(
             AdditionalTabComponentManager manager, ProcessHandler startedProcess) {
+        Disposable disposer = startedProcess.getUserData(PROCESS_DISPOSER);
         SwagRootsTab rootsTab =
                 new SwagRootsTab(
                         Objects.requireNonNull(startedProcess.getUserData(Util.INFO_BEAN_KEY)),
-                        getProject());
+                        getProject(),
+                        disposer);
         startedProcess.addProcessListener(
                 new ProcessAdapter() {
                     @Override

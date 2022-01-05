@@ -19,9 +19,12 @@ import com.intellij.execution.process.OSProcessHandler;
 import com.intellij.execution.process.ProcessAdapter;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.runners.ExecutionEnvironment;
+import com.intellij.openapi.Disposable;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.util.net.NetUtils;
 
 import de.eudaemon.swag.ComponentInfoMBean;
@@ -95,6 +98,7 @@ public class SwagApplicationCommandLineState
 
         private final AtomicInteger tries = new AtomicInteger(0);
         private final Timer retryTimer = new Timer(500, a -> tryToConnect());
+        private Disposable disposer;
 
         public ConnectListener(
                 int port_,
@@ -107,6 +111,7 @@ public class SwagApplicationCommandLineState
 
         @Override
         public void startNotified(@NotNull ProcessEvent event) {
+            disposer = event.getProcessHandler().getUserData(SwagConfiguration.PROCESS_DISPOSER);
             retryTimer.start();
         }
 
@@ -117,7 +122,8 @@ public class SwagApplicationCommandLineState
             }
             if (!cancelled && !connected) {
                 ComponentInfoMBean infoBean =
-                        SwagNotificationHandler.getInstance().startListeningTo(port, project);
+                        SwagNotificationHandler.getInstance()
+                                .startListeningTo(port, project, disposer);
                 connected = infoBean != null;
                 if (connected) {
                     retryTimer.stop();
@@ -130,6 +136,7 @@ public class SwagApplicationCommandLineState
         public void processTerminated(@NotNull ProcessEvent event) {
             cancelled = true;
             SwagNotificationHandler.getInstance().cleanup(port);
+            ApplicationManager.getApplication().invokeLater(() -> Disposer.dispose(disposer));
         }
     }
 }

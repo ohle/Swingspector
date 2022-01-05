@@ -12,7 +12,9 @@ import org.apache.commons.lang.StringUtils;
 
 import com.intellij.icons.AllIcons.Actions;
 import com.intellij.icons.AllIcons.Hierarchy;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.wm.RegisterToolWindowTask;
 import com.intellij.openapi.wm.ToolWindow;
@@ -60,7 +62,7 @@ public class Util {
                 .map(TreeViewPanel.class::cast);
     }
 
-    public static Content openTreeTab(RunningComponent component) {
+    public static Content openTreeTab(RunningComponent component, Disposable disposer) {
         if (treeToolWindow == null) {
             registerTreeToolWindow(component.getProject());
         }
@@ -71,17 +73,22 @@ public class Util {
             return existingTab.get();
         } else {
             Content tab =
-                    createOrReplaceTab(component, contentManager, new TreeViewPanel(component));
+                    createOrReplaceTab(
+                            component,
+                            contentManager,
+                            new TreeViewPanel(component, disposer),
+                            disposer);
             treeToolWindow.activate(() -> {});
             return tab;
         }
     }
 
-    public static Content openComponentTab(RunningComponent component) {
-        return openComponentTab(component, () -> {});
+    public static Content openComponentTab(RunningComponent component, Disposable parentDisposer) {
+        return openComponentTab(component, () -> {}, parentDisposer);
     }
 
-    public static Content openComponentTab(RunningComponent component, Runnable runnable) {
+    public static Content openComponentTab(
+            RunningComponent component, Runnable runnable, Disposable parentDisposer) {
         if (componentToolWindow == null) {
             registerComponentToolWindow(component.getProject());
         }
@@ -93,18 +100,25 @@ public class Util {
         } else {
             Content tab =
                     createOrReplaceTab(
-                            component, contentManager, new ComponentInfoPanel(component));
+                            component,
+                            contentManager,
+                            new ComponentInfoPanel(component, parentDisposer),
+                            parentDisposer);
             componentToolWindow.activate(runnable);
             return tab;
         }
     }
 
     private static Content createOrReplaceTab(
-            RunningComponent component, ContentManager contentManager, JComponent content) {
+            RunningComponent component,
+            ContentManager contentManager,
+            JComponent content,
+            Disposable parentDisposer) {
         Content newContent =
                 contentManager
                         .getFactory()
                         .createContent(content, generateTitle(component.getDescription()), true);
+        Disposer.register(parentDisposer, new ToolWindowDisposer(contentManager, newContent));
         newContent.setTabName(String.valueOf(component.getId()));
         boolean foundExisting = false;
         for (int i = 0; i < contentManager.getContentCount(); i++) {
@@ -170,11 +184,18 @@ public class Util {
                                         () -> "Swing Hierarchy"));
     }
 
-    public static void removeComponentTab(Content tab) {
-        componentToolWindow.getContentManager().removeContent(tab, true);
-    }
+    private static final class ToolWindowDisposer implements Disposable {
+        private final ContentManager contentManager;
+        private final Content content;
 
-    public static void removeTreeTab(Content tab) {
-        treeToolWindow.getContentManager().removeContent(tab, true);
+        private ToolWindowDisposer(ContentManager contentManager_, Content content_) {
+            contentManager = contentManager_;
+            content = content_;
+        }
+
+        @Override
+        public void dispose() {
+            contentManager.removeContent(content, true);
+        }
     }
 }

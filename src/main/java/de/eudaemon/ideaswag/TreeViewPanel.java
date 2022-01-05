@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 
 import javax.swing.tree.TreeSelectionModel;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionPlaces;
@@ -27,10 +28,12 @@ public class TreeViewPanel extends JPanel {
 
     private final RunningComponent root;
     private final Tree tree;
+    private final Disposable disposer;
     private boolean autoLocateOn = false;
 
-    public TreeViewPanel(RunningComponent component_) {
+    public TreeViewPanel(RunningComponent component_, Disposable disposer_) {
         root = component_;
+        disposer = disposer_;
         ComponentTreeNode rootNode = new ComponentTreeNode(root);
         tree = new Tree(rootNode);
         tree.setCellRenderer(new ComponentTreeNodeRenderer());
@@ -68,7 +71,8 @@ public class TreeViewPanel extends JPanel {
 
     private void autoLocate() {
         if (autoLocateOn) {
-            getSelectedComponent().ifPresent(c -> Util.openComponentTab(c, tree::requestFocus));
+            getSelectedComponent()
+                    .ifPresent(c -> Util.openComponentTab(c, tree::requestFocus, disposer));
         }
     }
 
@@ -81,7 +85,7 @@ public class TreeViewPanel extends JPanel {
     }
 
     public void locateSelected() {
-        getSelectedComponent().ifPresent(Util::openComponentTab);
+        getSelectedComponent().ifPresent(component -> Util.openComponentTab(component, disposer));
     }
 
     private Optional<RunningComponent> getSelectedComponent() {
