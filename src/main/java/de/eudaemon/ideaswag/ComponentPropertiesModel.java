@@ -5,6 +5,7 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import de.eudaemon.swag.ComponentProperty;
+import de.eudaemon.swag.ComponentProperty.ListenerSet;
 
 public class ComponentPropertiesModel extends AbstractTableModel {
 
@@ -36,11 +37,26 @@ public class ComponentPropertiesModel extends AbstractTableModel {
     }
 
     @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        if (columnIndex == 0) {
-            return properties.get(rowIndex).key;
+    public Class<?> getColumnClass(int columnIndex) {
+        if (columnIndex == 1) {
+            return ComponentProperty.class;
         } else {
-            return properties.get(rowIndex).valueDescription;
+            return super.getColumnClass(columnIndex);
+        }
+    }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return columnIndex == 1 && properties.get(rowIndex) instanceof ListenerSet;
+    }
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        ComponentProperty prop = properties.get(rowIndex);
+        if (columnIndex == 0) {
+            return prop.key;
+        } else {
+            return prop;
         }
     }
 }

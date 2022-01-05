@@ -11,6 +11,7 @@ import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -22,19 +23,27 @@ import java.awt.Stroke;
 
 import java.awt.image.BufferedImage;
 
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 
 import javax.swing.border.EmptyBorder;
 
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 import com.intellij.execution.filters.TextConsoleBuilder;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.icons.AllIcons.Actions;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
@@ -43,15 +52,23 @@ import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
+import com.intellij.pom.Navigatable;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.util.ClassUtil;
+import com.intellij.ui.Gray;
 import com.intellij.ui.JBSplitter;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTabbedPane;
 import com.intellij.ui.table.JBTable;
 import com.intellij.unscramble.AnalyzeStacktraceUtil;
+import com.intellij.util.ui.AbstractTableCellEditor;
 import com.intellij.util.ui.JBInsets;
 import com.intellij.util.ui.JBUI;
 
 import de.eudaemon.swag.ComponentProperty;
+import de.eudaemon.swag.ComponentProperty.ListenerSet;
 import de.eudaemon.swag.PlacementInfo;
 import de.eudaemon.swag.SerializableImage;
 import de.eudaemon.swag.SizeInfos;
@@ -287,6 +304,7 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
         @Override
         protected void paintComponent(Graphics g) {
             Graphics2D g2d = (Graphics2D) g;
+            drawCheckerBoard(g2d);
             if (snapshot != null) {
                 g2d.drawImage(snapshot, 0, 0, null);
             }
@@ -304,6 +322,16 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
             g2d.drawRect(0, 0, sizing.preferredSize.size.width, sizing.preferredSize.size.height);
             g2d.setColor(MIN_SIZE_COLOR);
             g2d.drawRect(0, 0, sizing.minimumSize.size.width, sizing.minimumSize.size.height);
+        }
+
+        private void drawCheckerBoard(Graphics2D g) {
+            int squareSize = 5;
+            for (int y = 0; y * squareSize < getHeight(); y++) {
+                for (int x = 0; x * squareSize < getWidth(); x++) {
+                    g.setColor(x % 2 == y % 2 ? Gray._150 : Gray._70);
+                    g.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
+                }
+            }
         }
 
         @Override
@@ -346,6 +374,8 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
         for (String category : propsByCategory.keySet()) {
             List<ComponentProperty> theseProps = propsByCategory.get(category);
             JBTable table = new JBTable(new ComponentPropertiesModel(theseProps));
+            table.setDefaultRenderer(ComponentProperty.class, new PropertyRenderer());
+            table.setDefaultEditor(ComponentProperty.class, new PropertyEditor());
             int width = 15;
             for (int row = 0; row < table.getRowCount(); row++) {
                 TableCellRenderer renderer = table.getCellRenderer(row, 0);
@@ -359,5 +389,103 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
         }
 
         return tabbedPane;
+    }
+
+    private class ListenerCell extends JPanel {
+
+        public ListenerCell(ComponentProperty.ListenerSet listeners) {
+            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+            for (String className : listeners.classNames) {
+                JButton button = new JButton();
+                button.setContentAreaFilled(false);
+                button.setBorder(new EmptyBorder(JBInsets.create(0, 0)));
+                button.setHorizontalAlignment(SwingConstants.LEFT);
+                Color linkColor = UIManager.getColor("Hyperlink.linkColor");
+                button.setText(
+                        String.format(
+                                "<html><u><font color=#%02x%02x%02x>%s</font></u></html>",
+                                linkColor.getRed(),
+                                linkColor.getGreen(),
+                                linkColor.getBlue(),
+                                className));
+                button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                button.addActionListener(a -> navigateTo(className));
+                add(button);
+            }
+        }
+
+        private void navigateTo(String className) {
+            PsiClass clazz = ClassUtil.findPsiClass(PsiManager.getInstance(project), className);
+            if (clazz != null) {
+                PsiElement navElement = clazz.getNavigationElement();
+                if (navElement instanceof Navigatable && ((Navigatable) navElement).canNavigate()) {
+                    ((Navigatable) navElement).navigate(true);
+                } else {
+                    Notifications.Bus.notify(
+                            new Notification(
+                                    "idea-swag notifications",
+                                    "Could not navigate to class",
+                                    "Class '" + className + "' cannot be navigated to",
+                                    NotificationType.ERROR),
+                            project);
+                }
+            } else {
+                Notifications.Bus.notify(
+                        new Notification(
+                                "idea-swag notifications",
+                                "Class not found",
+                                "No class '" + className + "' found in current project",
+                                NotificationType.ERROR),
+                        project);
+            }
+        }
+    }
+
+    private class PropertyRenderer implements TableCellRenderer {
+        private final DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
+
+        @Override
+        public Component getTableCellRendererComponent(
+                JTable table,
+                Object value,
+                boolean isSelected,
+                boolean hasFocus,
+                int row,
+                int column) {
+            if (value instanceof ComponentProperty.ListenerSet) {
+                return new ListenerCell((ListenerSet) value);
+            } else if (value instanceof ComponentProperty) {
+                return defaultRenderer.getTableCellRendererComponent(
+                        table,
+                        ((ComponentProperty) value).valueDescription,
+                        isSelected,
+                        hasFocus,
+                        row,
+                        column);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+    }
+
+    private class PropertyEditor extends AbstractTableCellEditor {
+
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+
+        @Override
+        public Component getTableCellEditorComponent(
+                JTable table, Object value, boolean isSelected, int row, int column) {
+            if (value instanceof ComponentProperty.ListenerSet) {
+                return new ListenerCell((ListenerSet) value);
+            } else {
+                return renderer.getTableCellRendererComponent(
+                        table, value, isSelected, true, row, column);
+            }
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return null;
+        }
     }
 }

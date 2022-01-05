@@ -10,6 +10,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <configurationType implementation="de.eudaemon.ideaswag.SwagConfigurationType"/>
         <themeMetadataProvider path="/META-INF/idea-swag.themeMetadata.json"/>
+        <notificationGroup displayType="BALLOON" id="idea-swag notifications"/>
     </extensions>
 
     <actions>
