@@ -87,7 +87,6 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
 
     private final RunningComponent component;
     private final Project project;
-    private final String title;
     private final Disposable disposer;
 
     @Override
@@ -97,7 +96,6 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
         component = component_;
         project = component_.getProject();
         disposer = disposer_;
-        title = Util.generateTitle(component.getDescription());
         setLayout(new BorderLayout());
         JBSplitter mainSplitter = new JBSplitter(SPLIT_PROPORTION_KEY, .7f);
         JBSplitter splitter = new JBSplitter(RIGHT_SPLIT_PROPORTION_KEY, .5f);
@@ -106,10 +104,6 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
         mainSplitter.setFirstComponent(splitter);
         mainSplitter.setSecondComponent(createPropertiesPanel());
         add(mainSplitter, BorderLayout.CENTER);
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     @NotNull
