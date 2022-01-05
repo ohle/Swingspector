@@ -27,6 +27,7 @@ import com.intellij.openapi.components.BaseState;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
 
+import org.jdom.Element;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -85,6 +86,30 @@ public class SwagConfiguration extends ApplicationConfiguration {
     @Override
     public @NotNull SettingsEditor<? extends RunConfiguration> getConfigurationEditor() {
         return new SwagConfigurable(getProject());
+    }
+
+    @Override
+    public void writeExternal(@NotNull Element element) {
+        super.writeExternal(element);
+        // Apparently, SwagConfigurationOptions' StoredProperties aren't persisted automatically
+        Element keyStroke = new Element("keyStroke");
+        KeyStroke ks = getOptions().getKeyStroke();
+        keyStroke.setAttribute("code", String.valueOf(ks.getKeyCode()));
+        keyStroke.setAttribute("modifiers", String.valueOf(ks.getModifiers()));
+        element.addContent(keyStroke);
+    }
+
+    @Override
+    public void readExternal(@NotNull Element element) {
+        super.readExternal(element);
+        Element keyStroke = element.getChild("keyStroke");
+        if (keyStroke == null) {
+            return;
+        }
+        int code = Integer.parseInt(keyStroke.getAttributeValue("code"));
+        int mods = Integer.parseInt(keyStroke.getAttributeValue("modifiers"));
+        //noinspection MagicConstant
+        setKeyStroke(KeyStroke.getKeyStroke(code, mods));
     }
 
     public KeyStroke getKeyStroke() {
