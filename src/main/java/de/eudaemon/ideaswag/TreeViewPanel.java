@@ -24,16 +24,22 @@ import com.intellij.ui.tree.TreeVisitor.Action;
 import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.ui.tree.TreeUtil;
 
-public class TreeViewPanel extends JPanel {
+public class TreeViewPanel extends JPanel implements Refreshable {
 
     private final RunningComponent root;
-    private final Tree tree;
+    private Tree tree;
     private final Disposable disposer;
     private boolean autoLocateOn = false;
 
     public TreeViewPanel(RunningComponent component_, Disposable disposer_) {
         root = component_;
         disposer = disposer_;
+        refresh();
+    }
+
+    @Override
+    public void refresh() {
+        removeAll();
         ComponentTreeNode rootNode = new ComponentTreeNode(root);
         tree = new Tree(rootNode);
         tree.setCellRenderer(new ComponentTreeNodeRenderer());

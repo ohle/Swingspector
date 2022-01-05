@@ -19,6 +19,10 @@ import javax.swing.ListSelectionModel;
 import com.intellij.diagnostic.logging.AdditionalTabComponent;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionGroup;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.ActionPlaces;
+import com.intellij.openapi.actionSystem.ActionToolbar;
+import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBLabel;
@@ -32,27 +36,47 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SwagRootsTab extends AdditionalTabComponent {
+public class SwagRootsTab extends AdditionalTabComponent implements Refreshable {
 
-    private final JBList<RunningComponent> rootsList;
+    private ComponentInfoMBean infoBean = null;
+    private JBList<RunningComponent> rootsList;
     private final DefaultListModel<RunningComponent> roots = new DefaultListModel<>();
     private final Project project;
     private final Disposable disposer;
 
     public SwagRootsTab(
-            CompletableFuture<ComponentInfoMBean> infoBean,
+            CompletableFuture<ComponentInfoMBean> infoBean_,
             Project project_,
             Disposable disposer_) {
         project = project_;
         disposer = disposer_;
-        rootsList = createList();
-        infoBean.thenAcceptAsync(this::init, ApplicationManager.getApplication()::invokeLater);
+        infoBean_.thenAcceptAsync(this::init, ApplicationManager.getApplication()::invokeLater);
         setLayout(new BorderLayout());
+        AnAction actionGroup = ActionManager.getInstance().getAction("IdeaSWAG.RootsView");
+        ActionToolbar toolBar =
+                ActionManager.getInstance()
+                        .createActionToolbar(
+                                ActionPlaces.TOOLWINDOW_CONTENT, (ActionGroup) actionGroup, false);
+        toolBar.setTargetComponent(this);
+        add(toolBar.getComponent(), BorderLayout.WEST);
+        rootsList = createList();
         add(new JBLabel("SWAG root windows", ComponentStyle.LARGE), BorderLayout.NORTH);
         add(new JBScrollPane(rootsList), BorderLayout.CENTER);
     }
 
-    private void init(ComponentInfoMBean infoBean) {
+    @Override
+    public void refresh() {
+        if (infoBean == null) {
+            return;
+        }
+        rootsList.setPaintBusy(true);
+        roots.removeAllElements();
+        roots.addAll(RunningComponent.getRoots(infoBean, project));
+        rootsList.setPaintBusy(false);
+    }
+
+    private void init(ComponentInfoMBean infoBean_) {
+        infoBean = infoBean_;
         roots.addAll(RunningComponent.getRoots(infoBean, project));
         rootsList.setPaintBusy(false);
     }

@@ -74,7 +74,7 @@ import de.eudaemon.swag.SerializableImage;
 import de.eudaemon.swag.SizeInfos;
 import org.jetbrains.annotations.NotNull;
 
-public class ComponentInfoPanel extends JPanel implements Disposable {
+public class ComponentInfoPanel extends JPanel implements Disposable, Refreshable {
 
     private static final String SPLIT_PROPORTION_KEY =
             "de.eudaemon.idea-swag.component-info-panel.main-split-proportion";
@@ -89,14 +89,20 @@ public class ComponentInfoPanel extends JPanel implements Disposable {
     private final Project project;
     private final Disposable disposer;
 
-    @Override
-    public void dispose() {}
-
     public ComponentInfoPanel(RunningComponent component_, Disposable disposer_) {
         component = component_;
         project = component_.getProject();
         disposer = disposer_;
         setLayout(new BorderLayout());
+        refresh();
+    }
+
+    @Override
+    public void dispose() {}
+
+    @Override
+    public void refresh() {
+        removeAll();
         JBSplitter mainSplitter = new JBSplitter(SPLIT_PROPORTION_KEY, .7f);
         JBSplitter splitter = new JBSplitter(RIGHT_SPLIT_PROPORTION_KEY, .5f);
         splitter.setFirstComponent(createPlacementPanel());

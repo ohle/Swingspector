@@ -15,6 +15,10 @@
 
     <actions>
         <group id="IdeaSWAG.TreeView" description="IdeaSWAG tree view">
+            <action id="IdeaSWAG.RefreshTreeView"
+                    class="de.eudaemon.ideaswag.RefreshAction"
+                    description="Refresh view"
+                    icon="AllIcons.Actions.Refresh"/>
             <action id="IdeaSWAG.CollapseTreeNodes"
                     class="de.eudaemon.ideaswag.TreeViewActions$CollapseAll"
                     description="Collapse all tree nodes" text="Collapse All Tree Nodes"
@@ -39,6 +43,16 @@
                     class="de.eudaemon.ideaswag.ComponentViewActions$OpenInTree"
                     description="Open this component in tree view" text="Open In Tree View"
                     icon="AllIcons.General.Locate"/>
+            <action id="IdeaSWAG.RefreshComponentView"
+                    description="Refresh view"
+                    icon="AllIcons.Actions.Refresh"
+                    class="de.eudaemon.ideaswag.RefreshAction"/>
+        </group>
+        <group id="IdeaSWAG.RootsView" description="IdeaSWAG root windows">
+            <action id="IdeaSWAG.RefreshRootsView"
+                    description="Refresh view"
+                    icon="AllIcons.Actions.Refresh"
+                    class="de.eudaemon.ideaswag.RefreshAction"/>
         </group>
 
     </actions>
