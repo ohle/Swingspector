@@ -94,7 +94,7 @@ public class SwagApplicationCommandLineState
         boolean connected = false;
 
         private final AtomicInteger tries = new AtomicInteger(0);
-        private final Timer retryTimer = new Timer(500, a -> tryToConect());
+        private final Timer retryTimer = new Timer(500, a -> tryToConnect());
 
         public ConnectListener(
                 int port_,
@@ -110,7 +110,7 @@ public class SwagApplicationCommandLineState
             retryTimer.start();
         }
 
-        private void tryToConect() {
+        private void tryToConnect() {
             if (tries.getAndIncrement() > 10) {
                 retryTimer.stop();
                 LOG.error("Failed to connect");
