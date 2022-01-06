@@ -4,36 +4,68 @@
 [![Version](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
 
-## Template ToDo list
-- [x] Create a new [IntelliJ Platform Plugin Template][template] project.
-- [ ] Get familiar with the [template documentation][template].
-- [ ] Verify the [pluginGroup](/gradle.properties), [plugin ID](/src/main/resources/META-INF/plugin.xml) and [sources package](/src/main/kotlin).
-- [ ] Review the [Legal Agreements](https://plugins.jetbrains.com/docs/marketplace/legal-agreements.html).
-- [ ] [Publish a plugin manually](https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html?from=IJPluginTemplate) for the first time.
-- [ ] Set the Plugin ID in the above README badges.
-- [ ] Set the [Deployment Token](https://plugins.jetbrains.com/docs/marketplace/plugin-upload.html).
-- [ ] Click the <kbd>Watch</kbd> button on the top of the [IntelliJ Platform Plugin Template][template] to be notified about releases containing new features and fixes.
+## Summary
 
 <!-- Plugin description -->
-This Fancy IntelliJ Platform Plugin is going to be your implementation of the brilliant ideas that you have.
+`idea-swag` is a plugin for Intellij IDEA that allows to analyze Java Swing components in a running
+application.
 
-This specific section is a source for the [plugin.xml](/src/main/resources/META-INF/plugin.xml) file which will be extracted by the [Gradle](/build.gradle.kts) during the build process.
-
-To keep everything working, do not remove `<!-- ... -->` sections. 
+It is heavily inspired by the
+standalone [Swing Explorer](https://github.com/swingexplorer/swingexplorer). (Swing Explorer does
+come with an Intellij plugin, but it does not offer many features). In fact, the name of the
+instrumentation agent (SWAG, for SWing AGent), is blatantly copied from that project.
 <!-- Plugin description end -->
+
+## Features
+
+- Display information about swing components in a running application
+- Display component hierarchy
+- Navigate to point code where components were added
+
+## Usage
+
+![Demo](https://github.com/ohle/idea-swag/Demo.gif)
+
+`idea-swag` adds a new type of run configuration ("SWAG Swing Application") to IDEA. It is mostly
+identical to the standard Java Application run configuration, but will instrument the application
+for use with the plugin.
+
+Create a new run configuration of type "SWAG Swing Application" for your application, then run your
+application through it. `idea-swag` can now open a tool window with information about swing
+components of the running application.
+
+There are two ways to open a tool window for a component:
+
+### Using the hotkey
+
+The run configuration setup dialog includes a keyboard shortcut (default <kbd>F12</kbd>). This
+shortuct is installed in the application being run (so be sure to choose one that doesn't shadow an
+important shortcut of the application itself).
+
+Position your mouse cursor over a component of interest and press the shortcut keys (with the
+keyboard focus in your application) to open a window for that component.
+
+### Using the hierarchy of the root windows
+
+In the Run tool window, there is an additional tab ("SWAG root windows") that shows a list of all
+the root windows (JFrames, Dialogs, …) that the application opened. Double-clicking one of those
+will open the Swing Hierarchy tool window, showing the tree of components within that window.
+Individual components can be opened from there.
 
 ## Installation
 
-- Using IDE built-in plugin system:
-  
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "idea-swag"</kbd> >
+- :warning: **not published yet** Using IDE built-in plugin system:
+
+  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "
+  idea-swag"</kbd> >
   <kbd>Install Plugin</kbd>
-  
+
 - Manually:
 
-  Download the [latest release](https://github.com/ohle/idea-swag/releases/latest) and install it manually using
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
-
+  Download the [latest release](https://github.com/ohle/idea-swag/releases/latest) and install it
+  manually using
+  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from
+  disk...</kbd>
 
 ---
 Plugin based on the [IntelliJ Platform Plugin Template][template].

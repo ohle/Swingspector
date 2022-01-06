@@ -2,6 +2,14 @@
 
 # idea-swag Changelog
 
-## [Unreleased]
+## [ 0.1.0 ]
+
 ### Added
-- Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
+
+- Run configuration for Swing applications
+- Tool window showing details about Swing components in the running application
+    - Maximum, minimum, preferred and actual sizes
+    - Placement information, including stacktrace of Container.add() invocation
+    - Various property values
+    - Listeners with (limited) navigation
+- Tree view of component hierarchy for root windows of the running application
