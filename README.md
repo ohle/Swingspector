@@ -24,7 +24,7 @@ instrumentation agent (SWAG, for SWing AGent), is blatantly copied from that pro
 
 ## Usage
 
-![Demo](https://github.com/ohle/idea-swag/Demo.gif)
+![Demo](https://github.com/ohle/idea-swag/blobl/main/Demo.gif)
 
 `idea-swag` adds a new type of run configuration ("SWAG Swing Application") to IDEA. It is mostly
 identical to the standard Java Application run configuration, but will instrument the application
