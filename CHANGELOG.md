@@ -2,8 +2,7 @@
 
 # idea-swag Changelog
 
-## [ Unreleased ]
-
+## [Unreleased]
 ### Added
 
 - Run configuration for Swing applications
