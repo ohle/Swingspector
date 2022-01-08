@@ -1,4 +1,4 @@
-# idea-swag
+![idea-swag](https://raw.githubusercontent.com/ohle/idea-swag/main/Logo.png)
 
 ![Build](https://github.com/ohle/idea-swag/workflows/Build/badge.svg)
 [![Version](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
@@ -24,7 +24,7 @@ instrumentation agent (SWAG, for SWing AGent), is blatantly copied from that pro
 
 ## Usage
 
-![Demo](https://github.com/ohle/idea-swag/blobl/main/Demo.gif)
+![Demo](https://raw.githubusercontent.com/ohle/idea-swag/main/Demo.gif)
 
 `idea-swag` adds a new type of run configuration ("SWAG Swing Application") to IDEA. It is mostly
 identical to the standard Java Application run configuration, but will instrument the application

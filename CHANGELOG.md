@@ -3,6 +3,18 @@
 # idea-swag Changelog
 
 ## [Unreleased]
+
+### Added
+
+- Apache 2.0 License
+
+### Changed
+
+- Improved readme
+- Logo
+
+## v0.1.0
+
 ### Added
 
 - Run configuration for Swing applications
