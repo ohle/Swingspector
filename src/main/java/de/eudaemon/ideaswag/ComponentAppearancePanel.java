@@ -11,8 +11,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.RenderingHints;
 
-import java.awt.image.BufferedImage;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -20,7 +18,6 @@ import com.intellij.icons.AllIcons.Actions;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.JBUI;
 
-import de.eudaemon.swag.SerializableImage;
 import de.eudaemon.swag.SizeInfos;
 
 class ComponentAppearancePanel extends JPanel {
@@ -32,10 +29,8 @@ class ComponentAppearancePanel extends JPanel {
         component = component_;
         setLayout(new BorderLayout());
         sizeInfos = component.getSizeInfos();
-        SerializableImage snapshot = component.getSnapshot();
-        BufferedImage img = snapshot == null ? null : snapshot.getImage();
         add(createSizeTablePanel(), BorderLayout.NORTH);
-        add(new JBScrollPane(new ComponentVisualization(sizeInfos, img)), BorderLayout.CENTER);
+        add(new JBScrollPane(new ComponentVisualization(component)), BorderLayout.CENTER);
     }
 
     private Component createSizeTablePanel() {

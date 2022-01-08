@@ -32,10 +32,12 @@ class ComponentVisualization extends JPanel {
                     10.0f,
                     new float[] {10.0f, 5.0f},
                     0.0f);
+    private final RunningComponent component;
 
-    ComponentVisualization(SizeInfos sizing_, BufferedImage snapshot_) {
-        sizing = sizing_;
-        snapshot = snapshot_;
+    ComponentVisualization(RunningComponent component_) {
+        component = component_;
+        sizing = component.getSizeInfos();
+        snapshot = component.getSnapshot().getImage();
         setBorder(new EmptyBorder(JBInsets.create(10, 10)));
     }
 
