@@ -13,7 +13,7 @@
 - Improved readme
 - Logo
 
-## v0.1.0
+## 0.1.0
 
 ### Added
 
