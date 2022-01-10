@@ -22,6 +22,7 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import javax.swing.border.EmptyBorder;
@@ -167,7 +168,7 @@ class ComponentVisualization extends JPanel {
             double width = g.getFontMetrics().getStringBounds(label, g).getWidth();
             g.drawString(label, (int) (x + RULER_SIZE - width / 2.0), RULER_SIZE - 10);
         }
-        for (int y = 100; y < getWidth(); y += 100) {
+        for (int y = 100; y < getHeight(); y += 100) {
             AffineTransform transform = g.getTransform();
             String label = String.valueOf(y);
             double width = g.getFontMetrics().getStringBounds(label, g).getWidth();
@@ -204,7 +205,11 @@ class ComponentVisualization extends JPanel {
             return;
         }
         try {
-            Point2D pos = g.getTransform().inverseTransform(mousePosition, null);
+            Point2D pos =
+                    g.getTransform()
+                            .inverseTransform(
+                                    SwingUtilities.convertPoint(this, mousePosition, getParent()),
+                                    null);
             g.setColor(GUIDE_COLOR);
             g.setStroke(GUIDE_STROKE);
             g.drawLine((int) pos.getX(), (int) pos.getY(), (int) pos.getX(), 0);
@@ -216,7 +221,7 @@ class ComponentVisualization extends JPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        return getMinimumSize();
+        return new Dimension(snapshot.getWidth() + RULER_SIZE, snapshot.getHeight() + RULER_SIZE);
     }
 
     @Override

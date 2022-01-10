@@ -30,7 +30,14 @@ class ComponentAppearancePanel extends JPanel {
         setLayout(new BorderLayout());
         sizeInfos = component.getSizeInfos();
         add(createSizeTablePanel(), BorderLayout.NORTH);
-        add(new JBScrollPane(new ComponentVisualization(component)), BorderLayout.CENTER);
+        ComponentVisualization view = new ComponentVisualization(component);
+        view.addHoverComponentListener(
+                component ->
+                        System.out.println(
+                                component == null
+                                        ? "null"
+                                        : component.getDescription().simpleClassName));
+        add(new JBScrollPane(view), BorderLayout.CENTER);
     }
 
     private Component createSizeTablePanel() {
