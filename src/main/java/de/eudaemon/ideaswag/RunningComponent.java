@@ -1,11 +1,15 @@
 package de.eudaemon.ideaswag;
 
 import java.util.Collection;
+import java.util.Objects;
 
 import java.util.stream.Collectors;
 
+import java.awt.geom.Point2D;
+
 import com.intellij.openapi.project.Project;
 
+import de.eudaemon.swag.ChildBounds;
 import de.eudaemon.swag.ComponentDescription;
 import de.eudaemon.swag.ComponentInfoMBean;
 import de.eudaemon.swag.ComponentProperty;
@@ -57,6 +61,15 @@ public class RunningComponent {
         return connectedBean.getAllProperties(componentId);
     }
 
+    public RunningComponent getComponentAt(Point2D pos) {
+        Collection<ChildBounds> bounds = connectedBean.getVisibleChildrenBounds(componentId);
+        return bounds.stream()
+                .filter(b -> b.bounds.contains(pos))
+                .findAny()
+                .map(b -> new RunningComponent(connectedBean, b.childId, project))
+                .orElse(null);
+    }
+
     public PlacementInfo getPlacementInfo() {
         return connectedBean.getPlacementInfo(componentId);
     }
@@ -71,5 +84,24 @@ public class RunningComponent {
 
     public RunningComponent getRoot() {
         return new RunningComponent(connectedBean, connectedBean.getRoot(componentId), project);
+    }
+
+    @Override
+    public boolean equals(Object o_) {
+        if (this == o_) {
+            return true;
+        }
+        if (o_ == null || getClass() != o_.getClass()) {
+            return false;
+        }
+        RunningComponent that = (RunningComponent) o_;
+        return componentId == that.componentId
+                && connectedBean.equals(that.connectedBean)
+                && project.equals(that.project);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(connectedBean, componentId, project);
     }
 }

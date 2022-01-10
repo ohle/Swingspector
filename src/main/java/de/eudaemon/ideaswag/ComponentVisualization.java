@@ -1,14 +1,23 @@
 package de.eudaemon.ideaswag;
 
+import java.util.EventListener;
+import java.util.Objects;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
 
 import java.awt.image.BufferedImage;
 
@@ -17,6 +26,9 @@ import javax.swing.UIManager;
 
 import javax.swing.border.EmptyBorder;
 
+import javax.swing.event.EventListenerList;
+
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.colors.EditorColors;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.colors.EditorColorsScheme;
@@ -24,16 +36,18 @@ import com.intellij.ui.Gray;
 import com.intellij.util.ui.JBInsets;
 
 import de.eudaemon.swag.SizeInfos;
+import org.jetbrains.annotations.NotNull;
 
 class ComponentVisualization extends JPanel {
 
     private static final int SIZE_CUTOFF = 200;
     private static final int RULER_SIZE = 20;
+    private static final Color GUIDE_COLOR = Gray._40;
 
     private final SizeInfos sizing;
     private final BufferedImage snapshot;
-    private final Stroke normalStroke = new BasicStroke(1);
-    private final Stroke croppedStroke =
+    private static final Stroke NORMAL_STROKE = new BasicStroke(1);
+    private static final Stroke CROPPED_STROKE =
             new BasicStroke(
                     1F,
                     BasicStroke.CAP_SQUARE,
@@ -41,14 +55,60 @@ class ComponentVisualization extends JPanel {
                     10.0f,
                     new float[] {10.0f, 5.0f},
                     0.0f);
+    private static final BasicStroke GUIDE_STROKE =
+            new BasicStroke(
+                    1,
+                    BasicStroke.CAP_SQUARE,
+                    BasicStroke.JOIN_MITER,
+                    10.0f,
+                    new float[] {2.0f, 5.0f},
+                    0.0f);
     private final RunningComponent component;
+    private static final @NotNull Logger LOG = Logger.getInstance(ComponentVisualization.class);
+
+    private final EventListenerList listeners = new EventListenerList();
+    private RunningComponent componentUnderMouse = null;
+
+    private final AffineTransform contentTransform =
+            AffineTransform.getTranslateInstance(-RULER_SIZE, -RULER_SIZE);
 
     ComponentVisualization(RunningComponent component_) {
         System.out.println(UIManager.getColor(EditorColors.GUTTER_BACKGROUND));
         component = component_;
         sizing = component.getSizeInfos();
         snapshot = component.getSnapshot().getImage();
+        addMouseMotionListener(
+                new MouseAdapter() {
+
+                    @Override
+                    public void mouseMoved(MouseEvent e) {
+                        repaint();
+                        updateComponentUnderMouse();
+                    }
+                });
         setBorder(new EmptyBorder(JBInsets.create(10, 10)));
+    }
+
+    public void addHoverComponentListener(HoverComponentListener listener) {
+        listeners.add(HoverComponentListener.class, listener);
+    }
+
+    public void removeHoverComponentListener(HoverComponentListener listener) {
+        listeners.remove(HoverComponentListener.class, listener);
+    }
+
+    private void updateComponentUnderMouse() {
+        Point2D pos = contentTransform.transform(getMousePosition(), null);
+        RunningComponent c = component.getComponentAt(pos);
+        boolean componentChanged =
+                (c == null && componentUnderMouse != null)
+                        || (!Objects.equals(c, componentUnderMouse));
+        componentUnderMouse = c;
+        if (componentChanged) {
+            for (HoverComponentListener l : listeners.getListeners(HoverComponentListener.class)) {
+                l.componentChanged(componentUnderMouse);
+            }
+        }
     }
 
     @Override
@@ -61,19 +121,20 @@ class ComponentVisualization extends JPanel {
             g2d.drawImage(snapshot, 0, 0, null);
         }
         paintSizeRectangles(g2d);
+        paintPositionGuides(g2d);
     }
 
     private void paintSizeRectangles(Graphics2D g2d) {
         g2d.setColor(ComponentInfoPanel.MAX_SIZE_COLOR);
         if (isMaximumSizeCropped()) {
-            g2d.setStroke(croppedStroke);
+            g2d.setStroke(CROPPED_STROKE);
             Dimension size = getCroppedMaximumSize();
             g2d.drawRect(0, 0, size.width, size.height);
         } else {
-            g2d.setStroke(normalStroke);
+            g2d.setStroke(NORMAL_STROKE);
             g2d.drawRect(0, 0, sizing.maximumSize.size.width, sizing.maximumSize.size.height);
         }
-        g2d.setStroke(normalStroke);
+        g2d.setStroke(NORMAL_STROKE);
         g2d.setColor(ComponentInfoPanel.PREF_SIZE_COLOR);
         g2d.drawRect(0, 0, sizing.preferredSize.size.width, sizing.preferredSize.size.height);
         g2d.setColor(ComponentInfoPanel.MIN_SIZE_COLOR);
@@ -137,6 +198,22 @@ class ComponentVisualization extends JPanel {
         }
     }
 
+    private void paintPositionGuides(Graphics2D g) {
+        Point mousePosition = getMousePosition();
+        if (mousePosition == null) {
+            return;
+        }
+        try {
+            Point2D pos = g.getTransform().inverseTransform(mousePosition, null);
+            g.setColor(GUIDE_COLOR);
+            g.setStroke(GUIDE_STROKE);
+            g.drawLine((int) pos.getX(), (int) pos.getY(), (int) pos.getX(), 0);
+            g.drawLine((int) pos.getX(), (int) pos.getY(), 0, (int) pos.getY());
+        } catch (NoninvertibleTransformException e) {
+            LOG.error(e);
+        }
+    }
+
     @Override
     public Dimension getPreferredSize() {
         return getMinimumSize();
@@ -165,5 +242,9 @@ class ComponentVisualization extends JPanel {
     private boolean isMaximumSizeCropped() {
         return sizing.maximumSize.size.width - sizing.actualSize.width > SIZE_CUTOFF
                 || sizing.maximumSize.size.height - sizing.actualSize.height > SIZE_CUTOFF;
+    }
+
+    public interface HoverComponentListener extends EventListener {
+        void componentChanged(RunningComponent component);
     }
 }
