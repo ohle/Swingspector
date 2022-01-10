@@ -4,19 +4,16 @@
 
 ## [Unreleased]
 
+## [0.1.1]
 ### Added
-
 - Apache 2.0 License
 
 ### Changed
-
 - Improved readme
 - Logo
 
 ## 0.1.0
-
 ### Added
-
 - Run configuration for Swing applications
 - Tool window showing details about Swing components in the running application
     - Maximum, minimum, preferred and actual sizes
