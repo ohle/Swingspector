@@ -1,8 +1,8 @@
 ![idea-swag](https://raw.githubusercontent.com/ohle/idea-swag/main/Logo.png)
 
 ![Build](https://github.com/ohle/idea-swag/workflows/Build/badge.svg)
-[![Version](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
-[![Downloads](https://img.shields.io/jetbrains/plugin/d/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
+[![Version](https://img.shields.io/jetbrains/plugin/v/18345.svg)](https://plugins.jetbrains.com/plugin/18345)
+[![Downloads](https://img.shields.io/jetbrains/plugin/d/18345.svg)](https://plugins.jetbrains.com/plugin/18345)
 
 ## Summary
 
@@ -54,11 +54,13 @@ Individual components can be opened from there.
 
 ## Installation
 
-- :warning: **not published yet** Using IDE built-in plugin system:
+- Using IDE built-in plugin system:
 
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "
   idea-swag"</kbd> >
   <kbd>Install Plugin</kbd>
+
+  <iframe frameborder="none" width="245px" height="48px" src="https://plugins.jetbrains.com/embeddable/install/18345"></iframe>
 
 - Manually:
 
