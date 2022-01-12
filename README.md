@@ -13,7 +13,7 @@ application.
 It is heavily inspired by the
 standalone [Swing Explorer](https://github.com/swingexplorer/swingexplorer). (Swing Explorer does
 come with an Intellij plugin, but it does not offer many features). In fact, the name of the
-instrumentation agent (SWAG, for SWing AGent), is blatantly copied from that project.
+[instrumentation agent](https://github.com/ohle/swag) (SWAG, for SWing AGent), is blatantly copied from that project.
 <!-- Plugin description end -->
 
 ## Features
