@@ -60,8 +60,6 @@ Individual components can be opened from there.
   idea-swag"</kbd> >
   <kbd>Install Plugin</kbd>
 
-  <iframe frameborder="none" width="245px" height="48px" src="https://plugins.jetbrains.com/embeddable/install/18345"></iframe>
-
 - Manually:
 
   Download the [latest release](https://github.com/ohle/idea-swag/releases/latest) and install it
