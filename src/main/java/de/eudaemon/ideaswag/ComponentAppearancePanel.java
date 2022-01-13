@@ -15,7 +15,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.intellij.icons.AllIcons.Actions;
-import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.JBUI;
 
 import de.eudaemon.swag.SizeInfos;
@@ -37,7 +36,7 @@ class ComponentAppearancePanel extends JPanel {
                                 component == null
                                         ? "null"
                                         : component.getDescription().simpleClassName));
-        add(new JBScrollPane(view), BorderLayout.CENTER);
+        add(view, BorderLayout.CENTER);
     }
 
     private Component createSizeTablePanel() {
