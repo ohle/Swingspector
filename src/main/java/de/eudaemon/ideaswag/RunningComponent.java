@@ -31,6 +31,10 @@ public class RunningComponent {
         project = project_;
     }
 
+    public boolean isValid() {
+        return componentId >= 0;
+    }
+
     public static Collection<RunningComponent> getRoots(
             ComponentInfoMBean infoBean, Project project) {
         return infoBean.getRoots().stream()

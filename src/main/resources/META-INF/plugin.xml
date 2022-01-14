@@ -42,6 +42,10 @@
                     class="de.eudaemon.ideaswag.ComponentViewActions$OpenInTree"
                     description="Open this component in tree view" text="Open In Tree View"
                     icon="AllIcons.General.Locate"/>
+            <action id="IdeaSWAG.OpenParent"
+                    class="de.eudaemon.ideaswag.ComponentViewActions$OpenParent"
+                    description="Open the parent of this component" text="Open Parent"
+                    icon="AllIcons.General.ArrowUp"/>
             <action id="IdeaSWAG.RefreshComponentView"
                     description="Refresh view"
                     icon="AllIcons.Actions.Refresh"

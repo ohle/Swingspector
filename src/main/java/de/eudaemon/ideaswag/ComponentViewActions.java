@@ -26,6 +26,23 @@ public class ComponentViewActions {
         }
     }
 
+    public static class OpenParent extends AnAction {
+        @Override
+        public void actionPerformed(@NotNull AnActionEvent e) {
+            Util.getOpenComponentTab()
+                    .ifPresent(
+                            rc -> {
+                                RunningComponent parent = rc.getParent();
+                                if (parent.isValid()) {
+                                    Util.openComponentTab(
+                                            parent,
+                                            Objects.requireNonNull(getComponentInfoPanel(e))
+                                                    .getDisposer());
+                                }
+                            });
+        }
+    }
+
     @Nullable
     private static ComponentInfoPanel getComponentInfoPanel(@NotNull AnActionEvent e) {
         return (ComponentInfoPanel) e.getDataContext().getData(PlatformDataKeys.CONTEXT_COMPONENT);
