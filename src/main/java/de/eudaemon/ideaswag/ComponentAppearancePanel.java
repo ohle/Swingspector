@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.intellij.icons.AllIcons.Actions;
+import com.intellij.openapi.Disposable;
 import com.intellij.util.ui.JBUI;
 
 import de.eudaemon.swag.SizeInfos;
@@ -24,12 +25,12 @@ class ComponentAppearancePanel extends JPanel {
     private final SizeInfos sizeInfos;
     private final RunningComponent component;
 
-    ComponentAppearancePanel(RunningComponent component_) {
+    ComponentAppearancePanel(RunningComponent component_, Disposable disposer_) {
         component = component_;
         setLayout(new BorderLayout());
         sizeInfos = component.getSizeInfos();
         add(createSizeTablePanel(), BorderLayout.NORTH);
-        ComponentVisualization view = new ComponentVisualization(component);
+        ComponentVisualization view = new ComponentVisualization(component, disposer_);
         add(view, BorderLayout.CENTER);
     }
 

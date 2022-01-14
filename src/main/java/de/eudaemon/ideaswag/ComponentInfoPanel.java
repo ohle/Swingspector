@@ -89,7 +89,7 @@ public class ComponentInfoPanel extends JPanel implements Disposable, Refreshabl
         JBSplitter mainSplitter = new JBSplitter(SPLIT_PROPORTION_KEY, .7f);
         JBSplitter splitter = new JBSplitter(RIGHT_SPLIT_PROPORTION_KEY, .5f);
         splitter.setFirstComponent(createPlacementPanel());
-        splitter.setSecondComponent(new ComponentAppearancePanel(component));
+        splitter.setSecondComponent(new ComponentAppearancePanel(component, disposer));
         mainSplitter.setFirstComponent(splitter);
         mainSplitter.setSecondComponent(createPropertiesPanel());
         add(mainSplitter, BorderLayout.CENTER);

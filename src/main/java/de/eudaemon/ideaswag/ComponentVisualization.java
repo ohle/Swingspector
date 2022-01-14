@@ -33,6 +33,7 @@ import javax.swing.border.EmptyBorder;
 
 import javax.swing.event.EventListenerList;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.colors.EditorColors;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
@@ -82,9 +83,11 @@ class ComponentVisualization extends JLayeredPane {
     private final DistanceMeasurement distanceMeasurement = new DistanceMeasurement();
     private final AffineTransform contentTransform =
             AffineTransform.getTranslateInstance(-RULER_SIZE, -RULER_SIZE);
+    private final Disposable disposer;
 
-    ComponentVisualization(RunningComponent component_) {
+    ComponentVisualization(RunningComponent component_, Disposable disposer_) {
         component = component_;
+        disposer = disposer_;
         snapshot = component.getSnapshot().getImage();
         view = new View();
         JBScrollPane scrollPane = new JBScrollPane(view);
@@ -185,6 +188,10 @@ class ComponentVisualization extends JLayeredPane {
                             if (e.getButton() != MouseEvent.BUTTON1) {
                                 distanceMeasurement.reset();
                                 updateDistanceLabel();
+                            } else if (e.getClickCount() > 1) {
+                                if (componentUnderMouse != null) {
+                                    Util.openComponentTab(componentUnderMouse, disposer);
+                                }
                             }
                         }
 
