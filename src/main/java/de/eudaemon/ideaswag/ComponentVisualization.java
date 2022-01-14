@@ -255,6 +255,9 @@ class ComponentVisualization extends JLayeredPane {
                 y = bounds.y;
             }
             SizeInfos sizing = c.getSizeInfos();
+            if (sizing == null) {
+                return;
+            }
             if (isMaximumSizeCropped(sizing)) {
                 g2d.setStroke(CROPPED_STROKE);
                 Dimension size = getCroppedMaximumSize(sizing);
