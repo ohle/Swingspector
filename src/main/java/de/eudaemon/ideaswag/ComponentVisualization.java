@@ -77,6 +77,7 @@ class ComponentVisualization extends JLayeredPane {
     private final View view;
     private final JLabel positionLabel;
     private final JLabel measurementLabel;
+    private final JLabel componentLabel;
     private RunningComponent componentUnderMouse = null;
 
     private final DistanceMeasurement distanceMeasurement = new DistanceMeasurement();
@@ -90,9 +91,13 @@ class ComponentVisualization extends JLayeredPane {
         view = new View();
         JBScrollPane scrollPane = new JBScrollPane(view);
         add(scrollPane, DEFAULT_LAYER);
-        positionLabel = createHoverLabel("n/a", Borders.empty(5, 5, 1, 5));
+        componentLabel =
+                createHoverLabel(
+                        Util.generateTitle(component.getDescription()), Borders.empty(5, 5, 1, 5));
+        positionLabel = createHoverLabel("n/a", Borders.empty(1, 5));
         positionLabel.setVisible(false);
         measurementLabel = createHoverLabel("Click and drag to measure", Borders.empty(1, 5, 5, 5));
+        add(componentLabel, POPUP_LAYER);
         add(positionLabel, POPUP_LAYER);
         add(measurementLabel, POPUP_LAYER);
     }
