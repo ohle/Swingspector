@@ -7,26 +7,14 @@ import java.util.Map;
 
 import java.util.stream.Collectors;
 
-import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
-
-import java.awt.image.BufferedImage;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -40,7 +28,6 @@ import javax.swing.table.TableCellRenderer;
 import com.intellij.execution.filters.TextConsoleBuilder;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
-import com.intellij.icons.AllIcons.Actions;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -57,7 +44,6 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.ClassUtil;
-import com.intellij.ui.Gray;
 import com.intellij.ui.JBSplitter;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTabbedPane;
@@ -65,13 +51,10 @@ import com.intellij.ui.table.JBTable;
 import com.intellij.unscramble.AnalyzeStacktraceUtil;
 import com.intellij.util.ui.AbstractTableCellEditor;
 import com.intellij.util.ui.JBInsets;
-import com.intellij.util.ui.JBUI;
 
 import de.eudaemon.swag.ComponentProperty;
 import de.eudaemon.swag.ComponentProperty.ListenerSet;
 import de.eudaemon.swag.PlacementInfo;
-import de.eudaemon.swag.SerializableImage;
-import de.eudaemon.swag.SizeInfos;
 import org.jetbrains.annotations.NotNull;
 
 public class ComponentInfoPanel extends JPanel implements Disposable, Refreshable {
@@ -106,7 +89,7 @@ public class ComponentInfoPanel extends JPanel implements Disposable, Refreshabl
         JBSplitter mainSplitter = new JBSplitter(SPLIT_PROPORTION_KEY, .7f);
         JBSplitter splitter = new JBSplitter(RIGHT_SPLIT_PROPORTION_KEY, .5f);
         splitter.setFirstComponent(createPlacementPanel());
-        splitter.setSecondComponent(new VisualPanel());
+        splitter.setSecondComponent(new ComponentAppearancePanel(component, disposer));
         mainSplitter.setFirstComponent(splitter);
         mainSplitter.setSecondComponent(createPropertiesPanel());
         add(mainSplitter, BorderLayout.CENTER);
@@ -168,207 +151,6 @@ public class ComponentInfoPanel extends JPanel implements Disposable, Refreshabl
 
     public Disposable getDisposer() {
         return disposer;
-    }
-
-    private class VisualPanel extends JPanel {
-
-        private final SizeInfos sizeInfos;
-
-        private VisualPanel() {
-            setLayout(new BorderLayout());
-            sizeInfos = component.getSizeInfos();
-            SerializableImage snapshot = component.getSnapshot();
-            BufferedImage img = snapshot == null ? null : snapshot.getImage();
-            add(createSizeTablePanel(), BorderLayout.NORTH);
-            add(new JBScrollPane(new Visualization(sizeInfos, img)), BorderLayout.CENTER);
-        }
-
-        private Component createSizeTablePanel() {
-            JPanel panel = new JPanel(new GridBagLayout());
-            GridBagConstraints c =
-                    new GridBagConstraints(
-                            0,
-                            0,
-                            4,
-                            1,
-                            0.0,
-                            0.0,
-                            GridBagConstraints.NORTHWEST,
-                            GridBagConstraints.HORIZONTAL,
-                            JBUI.insets(2),
-                            0,
-                            0);
-            panel.add(new JLabel("<html><b>Sizes</b></html>"), c);
-            c.gridwidth = 1;
-            c.gridy++;
-            c.gridx = 0;
-            panel.add(new JLabel("actual"), c);
-            c.gridx = GridBagConstraints.RELATIVE;
-            addDimLabel(panel, sizeInfos.actualSize, c);
-            c.gridx = 0;
-            c.gridy++;
-            panel.add(new JLabel("minimum"), c);
-            c.gridx = GridBagConstraints.RELATIVE;
-            addDimLabel(panel, sizeInfos.minimumSize.size, c);
-            addCircle(panel, MIN_SIZE_COLOR, c);
-            if (sizeInfos.minimumSize.set) {
-                panel.add(new JLabel(Actions.PinTab), c);
-            }
-            c.gridx = 0;
-            c.gridy++;
-            panel.add(new JLabel("preferred"), c);
-            c.gridx = GridBagConstraints.RELATIVE;
-            addDimLabel(panel, sizeInfos.preferredSize.size, c);
-            addCircle(panel, PREF_SIZE_COLOR, c);
-            if (sizeInfos.preferredSize.set) {
-                panel.add(new JLabel(Actions.PinTab), c);
-            }
-            c.gridx = 0;
-            c.gridy++;
-            panel.add(new JLabel("maximum"), c);
-            c.gridx = GridBagConstraints.RELATIVE;
-            addDimLabel(panel, sizeInfos.maximumSize.size, c);
-            addCircle(panel, MAX_SIZE_COLOR, c);
-            if (sizeInfos.maximumSize.set) {
-                panel.add(new JLabel(Actions.PinTab), c);
-            }
-
-            c.gridx = 4;
-            c.gridy++;
-            c.weighty = 1.0;
-            c.weightx = 1.0;
-            panel.add(new JLabel(""), c);
-
-            return panel;
-        }
-
-        private void addDimLabel(JPanel container, Dimension dimension, GridBagConstraints c) {
-            Insets oldInsets = c.insets;
-            c.insets = JBUI.insets(2, 10, 2, 2);
-            container.add(dimLabel(dimension), c);
-            c.insets = oldInsets;
-        }
-
-        private void addCircle(JPanel container, Color color, GridBagConstraints c) {
-            int oldAnchor = c.anchor;
-            c.anchor = GridBagConstraints.CENTER;
-            container.add(circle(color), c);
-            c.anchor = oldAnchor;
-        }
-
-        private Component circle(Color color) {
-            return new JPanel() {
-                @Override
-                protected void paintComponent(Graphics g) {
-                    ((Graphics2D) g)
-                            .setRenderingHint(
-                                    RenderingHints.KEY_ANTIALIASING,
-                                    RenderingHints.VALUE_ANTIALIAS_ON);
-                    g.setColor(color);
-                    g.fillOval(0, 0, 10, 10);
-                }
-
-                @Override
-                public Dimension getPreferredSize() {
-                    return new Dimension(10, 10);
-                }
-
-                @Override
-                public Dimension getMinimumSize() {
-                    return getPreferredSize();
-                }
-            };
-        }
-
-        private JLabel dimLabel(Dimension dim) {
-            return new JLabel(String.format("%dx%d", dim.width, dim.height));
-        }
-    }
-
-    private static class Visualization extends JPanel {
-
-        private static final int SIZE_CUTOFF = 200;
-
-        private final SizeInfos sizing;
-        private final BufferedImage snapshot;
-        private final Stroke normalStroke = new BasicStroke(1);
-        private final Stroke croppedStroke =
-                new BasicStroke(
-                        1F,
-                        BasicStroke.CAP_SQUARE,
-                        BasicStroke.JOIN_MITER,
-                        10.0f,
-                        new float[] {10.0f, 5.0f},
-                        0.0f);
-
-        private Visualization(SizeInfos sizing_, BufferedImage snapshot_) {
-            sizing = sizing_;
-            snapshot = snapshot_;
-            setBorder(new EmptyBorder(JBInsets.create(10, 10)));
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            Graphics2D g2d = (Graphics2D) g;
-            drawCheckerBoard(g2d);
-            if (snapshot != null) {
-                g2d.drawImage(snapshot, 0, 0, null);
-            }
-            g2d.setColor(MAX_SIZE_COLOR);
-            if (isMaximumSizeCropped()) {
-                g2d.setStroke(croppedStroke);
-                Dimension size = getCroppedMaximumSize();
-                g2d.drawRect(0, 0, size.width, size.height);
-            } else {
-                g2d.setStroke(normalStroke);
-                g2d.drawRect(0, 0, sizing.maximumSize.size.width, sizing.maximumSize.size.height);
-            }
-            g2d.setStroke(normalStroke);
-            g2d.setColor(PREF_SIZE_COLOR);
-            g2d.drawRect(0, 0, sizing.preferredSize.size.width, sizing.preferredSize.size.height);
-            g2d.setColor(MIN_SIZE_COLOR);
-            g2d.drawRect(0, 0, sizing.minimumSize.size.width, sizing.minimumSize.size.height);
-        }
-
-        private void drawCheckerBoard(Graphics2D g) {
-            int squareSize = 5;
-            for (int y = 0; y * squareSize < getHeight(); y++) {
-                for (int x = 0; x * squareSize < getWidth(); x++) {
-                    g.setColor(x % 2 == y % 2 ? Gray._150 : Gray._70);
-                    g.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
-                }
-            }
-        }
-
-        @Override
-        public Dimension getPreferredSize() {
-            return getMinimumSize();
-        }
-
-        @Override
-        public Dimension getMinimumSize() {
-            Dimension size = getCroppedMaximumSize();
-            return new Dimension(size.width + 2, size.height + 2);
-        }
-
-        private Dimension getCroppedMaximumSize() {
-            int w = Math.max(sizing.actualSize.width, sizing.minimumSize.size.width);
-            int h = Math.max(sizing.actualSize.height, sizing.minimumSize.size.height);
-            int croppedWidth =
-                    sizing.maximumSize.size.width - w > SIZE_CUTOFF
-                            ? w + SIZE_CUTOFF
-                            : sizing.maximumSize.size.width;
-            int croppedHeight =
-                    sizing.maximumSize.size.height - h > SIZE_CUTOFF
-                            ? h + SIZE_CUTOFF
-                            : sizing.maximumSize.size.width;
-            return new Dimension(croppedWidth, croppedHeight);
-        }
-
-        private boolean isMaximumSizeCropped() {
-            return sizing.maximumSize.size.width - sizing.actualSize.width > SIZE_CUTOFF
-                    || sizing.maximumSize.size.height - sizing.actualSize.height > SIZE_CUTOFF;
-        }
     }
 
     private JComponent createPropertiesPanel() {
