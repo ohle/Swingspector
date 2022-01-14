@@ -2,8 +2,11 @@ package de.eudaemon.ideaswag;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 
 import java.util.stream.Collectors;
+
+import java.awt.Rectangle;
 
 import java.awt.geom.Point2D;
 
@@ -68,6 +71,13 @@ public class RunningComponent {
                 .findAny()
                 .map(b -> new RunningComponent(connectedBean, b.childId, project))
                 .orElse(null);
+    }
+
+    public Optional<Rectangle> getChildBounds(int childId) {
+        return connectedBean.getVisibleChildrenBounds(componentId).stream()
+                .filter(cb -> cb.childId == childId)
+                .findAny()
+                .map(cb -> cb.bounds);
     }
 
     public PlacementInfo getPlacementInfo() {

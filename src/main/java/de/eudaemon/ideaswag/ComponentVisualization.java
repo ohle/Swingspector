@@ -11,6 +11,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 
@@ -51,7 +52,6 @@ class ComponentVisualization extends JLayeredPane {
     private static final int RULER_SIZE = 20;
     private static final Color GUIDE_COLOR = Gray._40;
 
-    private final SizeInfos sizing;
     private final BufferedImage snapshot;
     private static final Stroke NORMAL_STROKE = new BasicStroke(1);
     private static final Stroke CROPPED_STROKE =
@@ -86,7 +86,6 @@ class ComponentVisualization extends JLayeredPane {
 
     ComponentVisualization(RunningComponent component_) {
         component = component_;
-        sizing = component.getSizeInfos();
         snapshot = component.getSnapshot().getImage();
         view = new View();
         JBScrollPane scrollPane = new JBScrollPane(view);
@@ -253,19 +252,31 @@ class ComponentVisualization extends JLayeredPane {
 
         private void paintSizeRectangles(Graphics2D g2d) {
             g2d.setColor(ComponentInfoPanel.MAX_SIZE_COLOR);
-            if (isMaximumSizeCropped()) {
+            RunningComponent c;
+            int x, y;
+            if (componentUnderMouse == null) {
+                c = component;
+                x = y = 0;
+            } else {
+                c = componentUnderMouse;
+                Rectangle bounds = component.getChildBounds(c.getId()).orElseThrow();
+                x = bounds.x;
+                y = bounds.y;
+            }
+            SizeInfos sizing = c.getSizeInfos();
+            if (isMaximumSizeCropped(sizing)) {
                 g2d.setStroke(CROPPED_STROKE);
-                Dimension size = getCroppedMaximumSize();
-                g2d.drawRect(0, 0, size.width, size.height);
+                Dimension size = getCroppedMaximumSize(sizing);
+                g2d.drawRect(x, y, size.width, size.height);
             } else {
                 g2d.setStroke(NORMAL_STROKE);
-                g2d.drawRect(0, 0, sizing.maximumSize.size.width, sizing.maximumSize.size.height);
+                g2d.drawRect(x, y, sizing.maximumSize.size.width, sizing.maximumSize.size.height);
             }
             g2d.setStroke(NORMAL_STROKE);
             g2d.setColor(ComponentInfoPanel.PREF_SIZE_COLOR);
-            g2d.drawRect(0, 0, sizing.preferredSize.size.width, sizing.preferredSize.size.height);
+            g2d.drawRect(x, y, sizing.preferredSize.size.width, sizing.preferredSize.size.height);
             g2d.setColor(ComponentInfoPanel.MIN_SIZE_COLOR);
-            g2d.drawRect(0, 0, sizing.minimumSize.size.width, sizing.minimumSize.size.height);
+            g2d.drawRect(x, y, sizing.minimumSize.size.width, sizing.minimumSize.size.height);
         }
 
         private void paintRulers(Graphics2D g) {
@@ -344,11 +355,11 @@ class ComponentVisualization extends JLayeredPane {
 
         @Override
         public Dimension getMinimumSize() {
-            Dimension size = getCroppedMaximumSize();
+            Dimension size = getCroppedMaximumSize(component.getSizeInfos());
             return new Dimension(size.width + 2, size.height + 2);
         }
 
-        private Dimension getCroppedMaximumSize() {
+        private Dimension getCroppedMaximumSize(SizeInfos sizing) {
             int w = Math.max(sizing.actualSize.width, sizing.minimumSize.size.width);
             int h = Math.max(sizing.actualSize.height, sizing.minimumSize.size.height);
             int croppedWidth =
@@ -362,7 +373,7 @@ class ComponentVisualization extends JLayeredPane {
             return new Dimension(croppedWidth, croppedHeight);
         }
 
-        private boolean isMaximumSizeCropped() {
+        private boolean isMaximumSizeCropped(SizeInfos sizing) {
             return sizing.maximumSize.size.width - sizing.actualSize.width > SIZE_CUTOFF
                     || sizing.maximumSize.size.height - sizing.actualSize.height > SIZE_CUTOFF;
         }
