@@ -1,6 +1,5 @@
 package de.eudaemon.ideaswag;
 
-import java.util.EventListener;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -130,14 +129,6 @@ class ComponentVisualization extends JLayeredPane {
         }
     }
 
-    public void addHoverComponentListener(HoverComponentListener listener) {
-        listeners.add(HoverComponentListener.class, listener);
-    }
-
-    public void removeHoverComponentListener(HoverComponentListener listener) {
-        listeners.remove(HoverComponentListener.class, listener);
-    }
-
     private void updateComponentUnderMouse() {
         RunningComponent c = component.getComponentAt(getMousePositionOnComponent());
         boolean componentChanged =
@@ -145,9 +136,6 @@ class ComponentVisualization extends JLayeredPane {
                         || (!Objects.equals(c, componentUnderMouse));
         componentUnderMouse = c;
         if (componentChanged) {
-            for (HoverComponentListener l : listeners.getListeners(HoverComponentListener.class)) {
-                l.componentChanged(componentUnderMouse);
-            }
             componentLabel.setText(Util.generateTitle(getSelectedComponent().getDescription()));
             ComponentVisualization.this.repaint();
         }
@@ -164,10 +152,6 @@ class ComponentVisualization extends JLayeredPane {
         }
         return contentTransform.transform(
                 SwingUtilities.convertPoint(this, mousePosition, view), null);
-    }
-
-    public interface HoverComponentListener extends EventListener {
-        void componentChanged(RunningComponent component);
     }
 
     private class View extends JPanel {
