@@ -149,7 +149,13 @@ class ComponentVisualization extends JLayeredPane {
             for (HoverComponentListener l : listeners.getListeners(HoverComponentListener.class)) {
                 l.componentChanged(componentUnderMouse);
             }
+            componentLabel.setText(Util.generateTitle(getSelectedComponent().getDescription()));
+            ComponentVisualization.this.repaint();
         }
+    }
+
+    private RunningComponent getSelectedComponent() {
+        return componentUnderMouse == null ? component : componentUnderMouse;
     }
 
     private Point2D getMousePositionOnComponent() {
