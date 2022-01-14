@@ -261,16 +261,25 @@ class ComponentVisualization extends JLayeredPane {
             if (isMaximumSizeCropped(sizing)) {
                 g2d.setStroke(CROPPED_STROKE);
                 Dimension size = getCroppedMaximumSize(sizing);
-                g2d.drawRect(x, y, size.width, size.height);
+                drawRect(x, y, size.width, size.height, g2d);
             } else {
                 g2d.setStroke(NORMAL_STROKE);
-                g2d.drawRect(x, y, sizing.maximumSize.size.width, sizing.maximumSize.size.height);
+                drawRect(x, y, sizing.maximumSize.size.width, sizing.maximumSize.size.height, g2d);
             }
             g2d.setStroke(NORMAL_STROKE);
             g2d.setColor(ComponentInfoPanel.PREF_SIZE_COLOR);
-            g2d.drawRect(x, y, sizing.preferredSize.size.width, sizing.preferredSize.size.height);
+            drawRect(x, y, sizing.preferredSize.size.width, sizing.preferredSize.size.height, g2d);
             g2d.setColor(ComponentInfoPanel.MIN_SIZE_COLOR);
-            g2d.drawRect(x, y, sizing.minimumSize.size.width, sizing.minimumSize.size.height);
+            drawRect(x, y, sizing.minimumSize.size.width, sizing.minimumSize.size.height, g2d);
+        }
+
+        private void drawRect(int x, int y, int w, int h, Graphics2D g) {
+            // Components can sometimes return unreasonable sizes, making drawRect heat the CPU
+            // for ages. In those cases, simply refuse to draw them.
+            if (w > 5000 || h > 5000) {
+                return;
+            }
+            g.drawRect(x, y, w, h);
         }
 
         private void paintRulers(Graphics2D g) {
