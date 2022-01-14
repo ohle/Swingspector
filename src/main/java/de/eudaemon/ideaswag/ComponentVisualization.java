@@ -2,6 +2,7 @@ package de.eudaemon.ideaswag;
 
 import java.util.EventListener;
 import java.util.Objects;
+import java.util.Optional;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -13,6 +14,7 @@ import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
@@ -77,6 +79,7 @@ class ComponentVisualization extends JLayeredPane {
     private final JLabel measurementLabel;
     private RunningComponent componentUnderMouse = null;
 
+    private final DistanceMeasurement distanceMeasurement = new DistanceMeasurement();
     private final AffineTransform contentTransform =
             AffineTransform.getTranslateInstance(-RULER_SIZE, -RULER_SIZE);
 
@@ -158,6 +161,7 @@ class ComponentVisualization extends JLayeredPane {
     }
 
     private class View extends JPanel {
+
         public View() {
             setBorder(new EmptyBorder(JBInsets.create(10, 10)));
             addMouseMotionListener(
@@ -165,6 +169,9 @@ class ComponentVisualization extends JLayeredPane {
                         @Override
                         public void mouseMoved(MouseEvent e) {
                             Point2D pos = getMousePositionOnComponent();
+                            if (pos == null) {
+                                return;
+                            }
                             if (pos.getX() > 0 && pos.getY() > 0) {
                                 positionLabel.setVisible(true);
                                 positionLabel.setText(
@@ -177,6 +184,46 @@ class ComponentVisualization extends JLayeredPane {
                             updateComponentUnderMouse();
                         }
                     });
+            MouseAdapter distanceUpdateListener =
+                    new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            if (e.getButton() != MouseEvent.BUTTON1) {
+                                distanceMeasurement.reset();
+                                updateDistanceLabel();
+                            }
+                        }
+
+                        @Override
+                        public void mousePressed(MouseEvent e) {
+                            if (e.getButton() == MouseEvent.BUTTON1) {
+                                distanceMeasurement.reset();
+                                Optional.ofNullable(getMousePositionOnComponent())
+                                        .ifPresent(distanceMeasurement::start);
+                            }
+                        }
+
+                        @Override
+                        public void mouseDragged(MouseEvent e) {
+                            if ((e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) > 0) {
+                                Optional.ofNullable(getMousePositionOnComponent())
+                                        .ifPresent(distanceMeasurement::dragTo);
+                                updateDistanceLabel();
+                            }
+                        }
+
+                        private void updateDistanceLabel() {
+                            int distance = distanceMeasurement.getDistance();
+                            if (distance > 0) {
+                                measurementLabel.setText(String.format("distance: %d", distance));
+                            } else {
+                                measurementLabel.setText("Click and drag to measure");
+                            }
+                            ComponentVisualization.this.repaint();
+                        }
+                    };
+            addMouseListener(distanceUpdateListener);
+            addMouseMotionListener(distanceUpdateListener);
         }
 
         @Override
@@ -190,6 +237,7 @@ class ComponentVisualization extends JLayeredPane {
             }
             paintSizeRectangles(g2d);
             paintPositionGuides(g2d);
+            distanceMeasurement.paint(g2d);
         }
 
         private void paintSizeRectangles(Graphics2D g2d) {
@@ -306,6 +354,61 @@ class ComponentVisualization extends JLayeredPane {
         private boolean isMaximumSizeCropped() {
             return sizing.maximumSize.size.width - sizing.actualSize.width > SIZE_CUTOFF
                     || sizing.maximumSize.size.height - sizing.actualSize.height > SIZE_CUTOFF;
+        }
+    }
+
+    private static class DistanceMeasurement {
+        private Point start = null;
+        private Point end = null;
+
+        private final int CROSSHAIR_LENGTH = 5;
+
+        void reset() {
+            start = null;
+            end = null;
+        }
+
+        void start(Point2D p) {
+            start = new Point((int) p.getX(), (int) p.getY());
+        }
+
+        void dragTo(Point2D p) {
+            if (start == null) {
+                return;
+            }
+            double dx = Math.abs(p.getX() - start.x);
+            double dy = Math.abs(p.getY() - start.y);
+            if (dx >= dy) {
+                end = new Point((int) p.getX(), start.y);
+            } else {
+                end = new Point(start.x, (int) p.getY());
+            }
+        }
+
+        void paint(Graphics2D g) {
+            if (start == null || end == null) {
+                return;
+            }
+            g.setStroke(NORMAL_STROKE);
+            paintCrosshair(start, g);
+            paintCrosshair(end, g);
+            g.drawLine(start.x, start.y, end.x, end.y);
+        }
+
+        private void paintCrosshair(Point p, Graphics2D g) {
+            g.drawLine(p.x - CROSSHAIR_LENGTH - 2, p.y, p.x - 2, p.y);
+            g.drawLine(p.x + 2, p.y, p.x + 2 + CROSSHAIR_LENGTH, p.y);
+            g.drawLine(p.x, p.y - CROSSHAIR_LENGTH - 2, p.x, p.y - 2);
+            g.drawLine(p.x, p.y + 2, p.x, p.y + CROSSHAIR_LENGTH + 2);
+        }
+
+        int getDistance() {
+            if (start == null || end == null) {
+                return 0;
+            }
+
+            // We can just use manhattan distance because the line is always axis-aligned
+            return Math.abs(end.x - start.x) + Math.abs(end.y - start.y);
         }
     }
 }
