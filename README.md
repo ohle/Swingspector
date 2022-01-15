@@ -71,7 +71,7 @@ The window contains three sections:
 - The properties panel, with various properties of the component grouped into thematic tabs. The
   listeners registered on the component (in the listeners tab) can be opened by clicking on them[^1]
 
-[^1] This currently only works for regular classes (including inner classes and anonymous classes),
+[^1]: This currently only works for regular classes (including inner classes and anonymous classes),
 but not method references or lambda expressions.
 
 The toolbar has buttons to open the component in the hierarchy tree, and to open the component's
