@@ -39,7 +39,16 @@ import org.jetbrains.annotations.Nullable;
 public class SwagConfiguration extends ApplicationConfiguration {
 
     public static Key<Disposable> PROCESS_DISPOSER =
-            KeyWithDefaultValue.create("swag-process-disposer", Disposer::newDisposable);
+            KeyWithDefaultValue.create(
+                    "swag-process-disposer", SwagConfiguration::createProcessDisposer);
+
+    private static Disposable createProcessDisposer() {
+        Disposable disposable = Disposer.newDisposable();
+        Disposer.register(
+                ApplicationManager.getApplication().getService(SwagApplicationService.class),
+                disposable);
+        return disposable;
+    }
 
     protected SwagConfiguration(@NotNull Project project, @NotNull ConfigurationFactory factory) {
         super("Swag Application", project, factory);
