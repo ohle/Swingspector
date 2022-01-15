@@ -254,7 +254,13 @@ class ComponentVisualization extends JLayeredPane {
                 x = bounds.x;
                 y = bounds.y;
             }
-            SizeInfos sizing = c.getSizeInfos();
+            SizeInfos sizing;
+            try {
+                sizing = c.getSizeInfos();
+            } catch (Throwable t) {
+                // process may already be disconnected
+                return;
+            }
             if (sizing == null) {
                 return;
             }
