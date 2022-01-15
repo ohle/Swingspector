@@ -77,7 +77,7 @@ public class SwagApplicationCommandLineState
 
     private String findAgentJar() {
         Path agentJarPath =
-                Path.of(PathManager.getPluginsPath(), "idea-swag", "lib", "swag-1.2.jar");
+                Path.of(PathManager.getPluginsPath(), "idea-swag", "lib", "swag-1.2.1.jar");
         return agentJarPath.toFile().getAbsolutePath();
     }
 
