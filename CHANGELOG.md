@@ -4,6 +4,19 @@
 
 ## [Unreleased]
 
+### Added
+
+- Component view:
+    - Rulers and pixel position overlay
+    - Click and drag to measure distances
+    - Show children's sizing rectangles on hover
+    - double click to open child
+- Open parent from action toolbar
+
+### Fixed
+- Hangs on components with weird min/max/preferred sizes
+- Occasional exceptions on closing the IDE
+
 ## [0.1.1]
 ### Added
 - Apache 2.0 License
