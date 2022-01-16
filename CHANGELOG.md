@@ -4,8 +4,8 @@
 
 ## [Unreleased]
 
+## [1.0.0]
 ### Added
-
 - Component view:
     - Rulers and pixel position overlay
     - Click and drag to measure distances
