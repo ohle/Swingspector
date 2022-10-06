@@ -3,6 +3,9 @@
 # idea-swag Changelog
 
 ## [Unreleased]
+- Compatibility with IDEA 2022.3
+
+## [1.0.2]
 - Compatibility with IDEA 2022.2
 
 ## [1.0.1]
