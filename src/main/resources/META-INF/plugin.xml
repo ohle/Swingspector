@@ -13,44 +13,6 @@
     </extensions>
 
     <actions>
-        <group id="IdeaSWAG.TreeView" description="IdeaSWAG tree view">
-            <action id="IdeaSWAG.RefreshTreeView"
-                    class="de.eudaemon.ideaswag.RefreshAction"
-                    description="Refresh view"
-                    icon="AllIcons.Actions.Refresh"/>
-            <action id="IdeaSWAG.CollapseTreeNodes"
-                    class="de.eudaemon.ideaswag.TreeViewActions$CollapseAll"
-                    description="Collapse all tree nodes" text="Collapse All Tree Nodes"
-                    icon="AllIcons.Actions.Collapseall"/>
-            <action id="IdeaSWAG.ExpandTreeNodes"
-                    class="de.eudaemon.ideaswag.TreeViewActions$ExpandAll"
-                    description="Expand all tree nodes" text="Expand All Tree Nodes"
-                    icon="AllIcons.Actions.Expandall"/>
-            <separator/>
-            <action id="IdeaSWAG.LocateComponent"
-                    class="de.eudaemon.ideaswag.TreeViewActions$LocateSelected"
-                    description="Open selected component" text="Open Selected Component"
-                    icon="AllIcons.General.Locate"/>
-            <action id="IdeaSWAG.AutoLocate"
-                    class="de.eudaemon.ideaswag.TreeViewActions$AutoLocate"
-                    description="Automatically open selected component"
-                    text="Automatically Open Selected Component"
-                    icon="AllIcons.General.AutoscrollToSource"/>
-        </group>
-        <group id="IdeaSWAG.ComponentView" description="IdeaSWAG component view">
-            <action id="IdeaSWAG.OpenInTreeView"
-                    class="de.eudaemon.ideaswag.ComponentViewActions$OpenInTree"
-                    description="Open this component in tree view" text="Open In Tree View"
-                    icon="AllIcons.General.Locate"/>
-            <action id="IdeaSWAG.OpenParent"
-                    class="de.eudaemon.ideaswag.ComponentViewActions$OpenParent"
-                    description="Open the parent of this component" text="Open Parent"
-                    icon="AllIcons.General.ArrowUp"/>
-            <action id="IdeaSWAG.RefreshComponentView"
-                    description="Refresh view"
-                    icon="AllIcons.Actions.Refresh"
-                    class="de.eudaemon.ideaswag.RefreshAction"/>
-        </group>
         <group id="IdeaSWAG.RootsView" description="IdeaSWAG root windows">
             <action id="IdeaSWAG.RefreshRootsView"
                     description="Refresh view"

@@ -13,12 +13,14 @@ import javax.swing.JPanel;
 
 import javax.swing.tree.TreeSelectionModel;
 
+import com.intellij.icons.AllIcons.Actions;
+import com.intellij.icons.AllIcons.General;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionPlaces;
 import com.intellij.openapi.actionSystem.ActionToolbar;
-import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.tree.TreeVisitor.Action;
 import com.intellij.ui.treeStructure.Tree;
@@ -66,13 +68,41 @@ public class TreeViewPanel extends JPanel implements Refreshable {
                         }
                     }
                 });
-        AnAction actionGroup = ActionManager.getInstance().getAction("IdeaSWAG.TreeView");
         ActionToolbar toolBar =
                 ActionManager.getInstance()
                         .createActionToolbar(
-                                ActionPlaces.TOOLWINDOW_CONTENT, (ActionGroup) actionGroup, true);
+                                ActionPlaces.TOOLWINDOW_CONTENT, createToolbarActions(), true);
         toolBar.setTargetComponent(this);
         add(toolBar.getComponent(), BorderLayout.NORTH);
+    }
+
+    private ActionGroup createToolbarActions() {
+        DefaultActionGroup group = new DefaultActionGroup();
+        group.add(
+                Util.actionBuilder()
+                        .description("Refresh view")
+                        .icon(Actions.Refresh)
+                        .build(this::refresh));
+        group.add(
+                Util.actionBuilder()
+                        .description("Expand all tree nodes")
+                        .text("Expand All Tree Nodes")
+                        .icon(Actions.Expandall)
+                        .build(this::expandAll));
+        group.addSeparator();
+        group.add(
+                Util.actionBuilder()
+                        .description("Open selected component")
+                        .text("Open Selected Component")
+                        .icon(General.Locate)
+                        .build(this::locateSelected));
+        group.add(
+                Util.actionBuilder()
+                        .description("Automatically open selected component")
+                        .text("Automatically Open Selected Component")
+                        .icon(General.AutoscrollToSource)
+                        .buildToggle(this::isAutoLocateOn, this::setAutoLocate));
+        return group;
     }
 
     private void autoLocate() {

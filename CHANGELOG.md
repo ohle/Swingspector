@@ -3,6 +3,7 @@
 # idea-swag Changelog
 
 ## [Unreleased]
+- Fix occasional exceptions from missing context when IDEA refreshes some actions
 
 ## [1.0.3]
 - Compatibility with IDEA 2022.3

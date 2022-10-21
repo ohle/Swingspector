@@ -28,6 +28,8 @@ import javax.swing.table.TableCellRenderer;
 import com.intellij.execution.filters.TextConsoleBuilder;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
+import com.intellij.icons.AllIcons.Actions;
+import com.intellij.icons.AllIcons.General;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -37,6 +39,7 @@ import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionPlaces;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.pom.Navigatable;
@@ -85,7 +88,7 @@ public class ComponentInfoPanel extends JPanel implements Disposable, Refreshabl
 
     @Override
     public void refresh() {
-        removeAll();
+        removeAll() /**/;
         JBSplitter mainSplitter = new JBSplitter(SPLIT_PROPORTION_KEY, .7f);
         JBSplitter splitter = new JBSplitter(RIGHT_SPLIT_PROPORTION_KEY, .5f);
         splitter.setFirstComponent(createPlacementPanel());
@@ -113,10 +116,44 @@ public class ComponentInfoPanel extends JPanel implements Disposable, Refreshabl
         ActionToolbar toolBar =
                 ActionManager.getInstance()
                         .createActionToolbar(
-                                ActionPlaces.TOOLWINDOW_CONTENT, (ActionGroup) actionGroup, false);
+                                ActionPlaces.TOOLWINDOW_CONTENT, createToolbarActionGroup(), false);
         toolBar.setTargetComponent(this);
         add(toolBar.getComponent(), BorderLayout.WEST);
         return panel;
+    }
+
+    private ActionGroup createToolbarActionGroup() {
+        DefaultActionGroup group = new DefaultActionGroup();
+        group.add(
+                Util.actionBuilder()
+                        .description("Open this component in tree view")
+                        .text("Open In Tree View")
+                        .icon(General.Locate)
+                        .build(this::openInTree));
+        group.add(
+                Util.actionBuilder()
+                        .description("Open the parent of this component")
+                        .text("Open Parent")
+                        .icon(General.ArrowUp)
+                        .build(this::openParent));
+        group.add(
+                Util.actionBuilder()
+                        .description("Refresh view")
+                        .icon(Actions.Refresh)
+                        .build(this::refresh));
+        return group;
+    }
+
+    private void openInTree() {
+        Util.openTreeTab(getRunningComponent().getRoot(), getDisposer());
+        Util.getOpenTreeTab().ifPresent(tp -> tp.selectComponent(getRunningComponent()));
+    }
+
+    private void openParent() {
+        RunningComponent parent = getRunningComponent().getParent();
+        if (parent.isValid()) {
+            Util.openComponentTab(parent, getDisposer());
+        }
     }
 
     private String getStackTraceAsText() {

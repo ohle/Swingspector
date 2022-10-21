@@ -5,6 +5,10 @@ import java.util.Optional;
 
 import java.util.concurrent.CompletableFuture;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
@@ -13,6 +17,9 @@ import org.apache.commons.lang.StringUtils;
 import com.intellij.icons.AllIcons.Actions;
 import com.intellij.icons.AllIcons.Hierarchy;
 import com.intellij.openapi.Disposable;
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.ToggleAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.Key;
@@ -25,6 +32,7 @@ import com.intellij.ui.content.ContentManager;
 
 import de.eudaemon.swag.ComponentDescription;
 import de.eudaemon.swag.ComponentInfoMBean;
+import org.jetbrains.annotations.NotNull;
 
 public class Util {
     private static ToolWindow componentToolWindow = null;
@@ -196,6 +204,54 @@ public class Util {
         @Override
         public void dispose() {
             contentManager.removeContent(content, true);
+        }
+    }
+
+    public static ActionBuilder actionBuilder() {
+        return new ActionBuilder();
+    }
+
+    public static class ActionBuilder {
+        private String text;
+        private String description;
+        private Icon icon;
+
+        public ActionBuilder text(String text_) {
+            text = text_;
+            return this;
+        }
+
+        public ActionBuilder description(String description_) {
+            description = description_;
+            return this;
+        }
+
+        public ActionBuilder icon(Icon icon_) {
+            icon = icon_;
+            return this;
+        }
+
+        public AnAction build(Runnable action) {
+            return new AnAction(text, description, icon) {
+                @Override
+                public void actionPerformed(@NotNull AnActionEvent e) {
+                    action.run();
+                }
+            };
+        }
+
+        public ToggleAction buildToggle(Supplier<Boolean> get, Consumer<Boolean> set) {
+            return new ToggleAction() {
+                @Override
+                public boolean isSelected(@NotNull AnActionEvent e) {
+                    return get.get();
+                }
+
+                @Override
+                public void setSelected(@NotNull AnActionEvent e, boolean state) {
+                    set.accept(state);
+                }
+            };
         }
     }
 }
