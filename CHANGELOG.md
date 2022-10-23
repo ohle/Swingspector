@@ -3,6 +3,8 @@
 # idea-swag Changelog
 
 ## [Unreleased]
+
+## [1.0.4]
 - Fix occasional exceptions from missing context when IDEA refreshes some actions
 
 ## [1.0.3]
