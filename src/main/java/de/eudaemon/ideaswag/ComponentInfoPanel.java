@@ -146,7 +146,7 @@ public class ComponentInfoPanel extends JPanel implements Disposable, Refreshabl
 
     private void openInTree() {
         Util.openTreeTab(getRunningComponent().getRoot(), getDisposer());
-        Util.getOpenTreeTab().ifPresent(tp -> tp.selectComponent(getRunningComponent()));
+        Util.getOpenTreeTab(project).ifPresent(tp -> tp.selectComponent(getRunningComponent()));
     }
 
     private void openParent() {

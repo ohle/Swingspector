@@ -10,12 +10,9 @@ import java.util.function.Supplier;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.intellij.icons.AllIcons.Actions;
-import com.intellij.icons.AllIcons.Hierarchy;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -23,9 +20,7 @@ import com.intellij.openapi.actionSystem.ToggleAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.Key;
-import com.intellij.openapi.wm.RegisterToolWindowTask;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
@@ -35,8 +30,6 @@ import de.eudaemon.swag.ComponentInfoMBean;
 import org.jetbrains.annotations.NotNull;
 
 public class Util {
-    private static ToolWindow componentToolWindow = null;
-    private static ToolWindow treeToolWindow = null;
     public static final Key<CompletableFuture<ComponentInfoMBean>> INFO_BEAN_KEY =
             Key.create("de.eudaemon.ideaswag.info-bean");
 
@@ -57,23 +50,19 @@ public class Util {
         return sb.toString();
     }
 
-    public static Optional<RunningComponent> getOpenComponentTab() {
-        return Optional.ofNullable(componentToolWindow.getContentManager().getSelectedContent())
-                .map(Content::getComponent)
-                .map(ComponentInfoPanel.class::cast)
-                .map(ComponentInfoPanel::getRunningComponent);
+    private static ToolWindow getTreeToolWindow(Project project) {
+        return ToolWindowManager.getInstance(project).getToolWindow("Swing Hierarchy");
     }
 
-    public static Optional<TreeViewPanel> getOpenTreeTab() {
-        return Optional.ofNullable(treeToolWindow.getContentManager().getSelectedContent())
+    public static Optional<TreeViewPanel> getOpenTreeTab(Project project) {
+        return Optional.ofNullable(
+                        getTreeToolWindow(project).getContentManager().getSelectedContent())
                 .map(Content::getComponent)
                 .map(TreeViewPanel.class::cast);
     }
 
     public static Content openTreeTab(RunningComponent component, Disposable disposer) {
-        if (treeToolWindow == null) {
-            registerTreeToolWindow(component.getProject());
-        }
+        ToolWindow treeToolWindow = getTreeToolWindow(component.getProject());
         ContentManager contentManager = treeToolWindow.getContentManager();
         Optional<Content> existingTab = getExistingTab(contentManager, component);
         if (existingTab.isPresent()) {
@@ -97,9 +86,9 @@ public class Util {
 
     public static Content openComponentTab(
             RunningComponent component, Runnable runnable, Disposable parentDisposer) {
-        if (componentToolWindow == null) {
-            registerComponentToolWindow(component.getProject());
-        }
+        ToolWindow componentToolWindow =
+                ToolWindowManager.getInstance(component.getProject())
+                        .getToolWindow("Swing Components");
         ContentManager contentManager = componentToolWindow.getContentManager();
         Optional<Content> existingTab = getExistingTab(contentManager, component);
         if (existingTab.isPresent()) {
@@ -156,40 +145,6 @@ public class Util {
             }
         }
         return Optional.empty();
-    }
-
-    private static void registerComponentToolWindow(Project project) {
-        componentToolWindow =
-                ToolWindowManager.getInstance(project)
-                        .registerToolWindow(
-                                new RegisterToolWindowTask(
-                                        "Swing Components",
-                                        ToolWindowAnchor.BOTTOM,
-                                        new JPanel(),
-                                        false,
-                                        true,
-                                        true,
-                                        true,
-                                        (project1, toolWindow1) -> {},
-                                        Actions.Search,
-                                        () -> "Swing Components"));
-    }
-
-    private static void registerTreeToolWindow(Project project) {
-        treeToolWindow =
-                ToolWindowManager.getInstance(project)
-                        .registerToolWindow(
-                                new RegisterToolWindowTask(
-                                        "Swing Hierarchy",
-                                        ToolWindowAnchor.LEFT,
-                                        new JPanel(),
-                                        true,
-                                        true,
-                                        true,
-                                        true,
-                                        (project1, toolWindow) -> {},
-                                        Hierarchy.Class,
-                                        () -> "Swing Hierarchy"));
     }
 
     private static final class ToolWindowDisposer implements Disposable {

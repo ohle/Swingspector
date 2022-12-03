@@ -3,6 +3,7 @@
 # idea-swag Changelog
 
 ## [Unreleased]
+- Avoid usages of internal APIs
 
 ## [1.0.4]
 - Fix occasional exceptions from missing context when IDEA refreshes some actions
