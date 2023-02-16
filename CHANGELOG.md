@@ -4,6 +4,7 @@
 
 ## [Unreleased]
 - Avoid usages of internal APIs
+- Compatibility with 2023.1
 
 ## [1.0.4]
 - Fix occasional exceptions from missing context when IDEA refreshes some actions
