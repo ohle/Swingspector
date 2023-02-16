@@ -3,6 +3,8 @@
 # idea-swag Changelog
 
 ## [Unreleased]
+
+## [1.0.5]
 - Avoid usages of internal APIs
 - Compatibility with 2023.1
 
