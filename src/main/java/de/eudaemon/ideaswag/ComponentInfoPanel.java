@@ -248,7 +248,7 @@ public class ComponentInfoPanel extends JPanel implements Disposable, Refreshabl
                 } else {
                     Notifications.Bus.notify(
                             new Notification(
-                                    "idea-swag notifications",
+                                    "Swingspector notifications",
                                     "Could not navigate to class",
                                     "Class '" + className + "' cannot be navigated to",
                                     NotificationType.ERROR),
@@ -257,7 +257,7 @@ public class ComponentInfoPanel extends JPanel implements Disposable, Refreshabl
             } else {
                 Notifications.Bus.notify(
                         new Notification(
-                                "idea-swag notifications",
+                                "Swingspector notifications",
                                 "Class not found",
                                 "No class '" + className + "' found in current project",
                                 NotificationType.ERROR),

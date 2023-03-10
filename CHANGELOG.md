@@ -1,8 +1,9 @@
 <!-- Keep a Changelog guide -> https://keepachangelog.com -->
 
-# idea-swag Changelog
+# Swingspector Changelog
 
 ## [Unreleased]
+- Rename plugin
 
 ## [1.0.5]
 - Avoid usages of internal APIs

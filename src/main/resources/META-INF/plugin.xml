@@ -1,7 +1,7 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>de.eudaemon.ideaswag</id>
-    <name>idea-swag</name>
+    <name>Swingspector</name>
     <vendor>Ohle Claussen</vendor>
 
     <depends>com.intellij.modules.platform</depends>
@@ -9,7 +9,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <configurationType implementation="de.eudaemon.ideaswag.SwagConfigurationType"/>
-        <notificationGroup displayType="BALLOON" id="idea-swag notifications"/>
+        <notificationGroup displayType="BALLOON" id="Swingspector notifications"/>
         <toolWindow factoryClass="de.eudaemon.ideaswag.ComponentToolWindowFactory"
                     id="Swing Components" anchor="bottom" canCloseContents="false"
                     icon="AllIcons.Actions.Search"/>

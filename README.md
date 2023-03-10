@@ -1,4 +1,4 @@
-![idea-swag](https://raw.githubusercontent.com/ohle/idea-swag/main/Logo.png)
+![Swingspector](https://raw.githubusercontent.com/ohle/idea-swag/main/Logo.png)
 
 ![Build](https://github.com/ohle/idea-swag/workflows/Build/badge.svg)
 [![Version](https://img.shields.io/jetbrains/plugin/v/18345.svg)](https://plugins.jetbrains.com/plugin/18345)
@@ -7,7 +7,7 @@
 ## Summary
 
 <!-- Plugin description -->
-`idea-swag` is a plugin for Intellij IDEA that allows to analyze Java Swing components in a running
+`Swingspector` is a plugin for Intellij IDEA that allows to analyze Java Swing components in a running
 application.
 
 It is heavily inspired by the
@@ -27,12 +27,12 @@ from that project.
 
 ![Demo](https://raw.githubusercontent.com/ohle/idea-swag/main/screenshots/Demo.gif)
 
-`idea-swag` adds a new type of run configuration ("SWAG Swing Application") to IDEA. It is mostly
+`Swingspector` adds a new type of run configuration ("SWAG Swing Application") to IDEA. It is mostly
 identical to the standard Java Application run configuration, but will instrument the application
 for use with the plugin.
 
 Create a new run configuration of type "SWAG Swing Application" for your application, then run your
-application through it. `idea-swag` can now open a tool window with information about swing
+application through it. `Swingspector` can now open a tool window with information about swing
 components of the running application.
 
 ### Navigation
@@ -85,7 +85,7 @@ its preferred, minimum, and maximum size are plotted, and its name is displayed 
 - Using IDE built-in plugin system:
 
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "
-  idea-swag"</kbd> >
+  Swingspector"</kbd> >
   <kbd>Install Plugin</kbd>
 
 - Manually:
