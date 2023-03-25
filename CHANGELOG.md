@@ -3,9 +3,11 @@
 # Swingspector Changelog
 
 ## [Unreleased]
-- Rename plugin
+- Swingspector now plugs into regular Application RunConfigurations instead of providing a new type
+- Existing Swingspector or SWAG RunConfigurations are now invalid; please create Application RunConfigurations
+  and enable Swingspector via "Modify Options" -> "Swing"
 
-## [1.0.5]
+## [1.1.0]
 - Avoid usages of internal APIs
 - Compatibility with 2023.1
 
