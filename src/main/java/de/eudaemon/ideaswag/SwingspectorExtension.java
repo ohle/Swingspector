@@ -34,6 +34,7 @@ import com.intellij.ui.content.ContentManager;
 import com.intellij.util.net.NetUtils;
 
 import de.eudaemon.swag.ComponentInfoMBean;
+import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -130,6 +131,53 @@ public class SwingspectorExtension extends RunConfigurationExtension {
     @Override
     protected @Nullable @TabTitle String getEditorTitle() {
         return "Swingspector";
+    }
+
+    @Override
+    protected void writeExternal(
+            @NotNull RunConfigurationBase<?> runConfiguration, @NotNull Element element) {
+        super.writeExternal(runConfiguration, element);
+        if (!isApplicableFor(runConfiguration)) {
+            return;
+        }
+        KeyStroke key =
+                runConfiguration.getCopyableUserData(SwingspectorSettingsEditorFragment.HOTKEY);
+
+        if (key == null) {
+            return;
+        }
+        Element swingSpector = new Element("Swingspector");
+        Element keyStroke = new Element("keystroke");
+        keyStroke.setAttribute("code", String.valueOf(key.getKeyCode()));
+        keyStroke.setAttribute("modifiers", String.valueOf(key.getModifiers()));
+        swingSpector.addContent(keyStroke);
+        Element active = new Element("active");
+        active.setAttribute(
+                "value", String.valueOf(isActive((ApplicationConfiguration) runConfiguration)));
+        swingSpector.addContent(active);
+        element.addContent(swingSpector);
+    }
+
+    @Override
+    protected void readExternal(
+            @NotNull RunConfigurationBase<?> runConfiguration, @NotNull Element element) {
+        super.readExternal(runConfiguration, element);
+        if (!isApplicableFor(runConfiguration)) {
+            return;
+        }
+        Element swingSpector = element.getChild("Swingspector");
+        if (swingSpector == null) {
+            return;
+        }
+        Element keystroke = swingSpector.getChild("keystroke");
+        KeyStroke keyStroke =
+                KeyStroke.getKeyStroke(
+                        Integer.parseInt(keystroke.getAttributeValue("code")),
+                        Integer.parseInt(keystroke.getAttributeValue("modifiers")));
+        boolean active =
+                Boolean.parseBoolean(swingSpector.getChild("active").getAttributeValue("value"));
+        runConfiguration.putCopyableUserData(SwingspectorSettingsEditorFragment.ACTIVE_KEY, active);
+        runConfiguration.putCopyableUserData(SwingspectorSettingsEditorFragment.HOTKEY, keyStroke);
     }
 
     private int findFreePort() {
