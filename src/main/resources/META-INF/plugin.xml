@@ -8,13 +8,15 @@
     <depends>com.intellij.modules.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <configurationType implementation="de.eudaemon.ideaswag.SwagConfigurationType"/>
+        <runConfigurationExtension implementation="de.eudaemon.ideaswag.SwingspectorExtension" />
         <notificationGroup displayType="BALLOON" id="Swingspector notifications"/>
         <toolWindow factoryClass="de.eudaemon.ideaswag.ComponentToolWindowFactory"
                     id="Swing Components" anchor="bottom" canCloseContents="false"
                     icon="AllIcons.Actions.Search"/>
         <toolWindow factoryClass="de.eudaemon.ideaswag.TreeToolWindowFactory" id="Swing Hierarchy"
                     anchor="left" canCloseContents="true" icon="AllIcons.Hierarchy.Class" />
+        <toolWindow factoryClass="de.eudaemon.ideaswag.RootsToolWindowFactory" id="Swing Roots"
+                    anchor="left" canCloseContents="true" icon="AllIcons.Debugger.Frame"/>
 
     </extensions>
 
