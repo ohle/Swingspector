@@ -9,8 +9,6 @@ import java.io.IOException;
 
 import java.nio.file.Path;
 
-import java.awt.event.KeyEvent;
-
 import javax.swing.KeyStroke;
 
 import com.intellij.execution.RunConfigurationExtension;
@@ -46,7 +44,6 @@ public class SwingspectorExtension extends RunConfigurationExtension {
 
     private final int port;
     private final String agentJar;
-    private final KeyStroke hotKey = KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0);
 
     public SwingspectorExtension() {
         port = findFreePort();
@@ -62,6 +59,8 @@ public class SwingspectorExtension extends RunConfigurationExtension {
                 || !isActive((ApplicationConfiguration) configuration)) {
             return;
         }
+        KeyStroke hotKey =
+                configuration.getCopyableUserData(SwingspectorSettingsEditorFragment.HOTKEY);
         ParametersList vmOptions = params.getVMParametersList();
         vmOptions.add("-Dcom.sun.management.jmxremote.port=" + port);
         vmOptions.add("-Dcom.sun.management.jmxremote.authenticate=false");
