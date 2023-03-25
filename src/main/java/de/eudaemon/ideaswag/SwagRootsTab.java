@@ -60,7 +60,7 @@ public class SwagRootsTab extends AdditionalTabComponent implements Refreshable 
         toolBar.setTargetComponent(this);
         add(toolBar.getComponent(), BorderLayout.WEST);
         rootsList = createList();
-        add(new JBLabel("SWAG root windows", ComponentStyle.LARGE), BorderLayout.NORTH);
+        add(new JBLabel("Swingspector root windows", ComponentStyle.LARGE), BorderLayout.NORTH);
         add(new JBScrollPane(rootsList), BorderLayout.CENTER);
     }
 

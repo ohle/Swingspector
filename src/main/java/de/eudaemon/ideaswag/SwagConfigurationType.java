@@ -13,8 +13,8 @@ public class SwagConfigurationType extends ConfigurationTypeBase {
     public SwagConfigurationType() {
         this(
                 "SwagApplicationConfiguration",
-                "SWAG Swing Application",
-                "Run a Swing application " + "with SWAG",
+                "Swingspector Application",
+                "Run a Swing application " + "with Swingspector",
                 RunConfigurations.Application);
     }
 
