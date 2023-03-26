@@ -31,15 +31,18 @@ class SwagConnectListener extends ProcessAdapter {
     private Disposable disposer;
 
     public SwagConnectListener(
-            int port_, Project project_, CompletableFuture<ComponentInfoMBean> infoBeanFuture_) {
+            int port_,
+            Project project_,
+            CompletableFuture<ComponentInfoMBean> infoBeanFuture_,
+            Disposable disposer_) {
         port = port_;
         project = project_;
         infoBeanFuture = infoBeanFuture_;
+        disposer = disposer_;
     }
 
     @Override
     public void startNotified(@NotNull ProcessEvent event) {
-        disposer = event.getProcessHandler().getUserData(SwingspectorExtension.PROCESS_DISPOSER);
         retryTimer.start();
     }
 

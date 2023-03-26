@@ -24,8 +24,6 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
-import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.KeyWithDefaultValue;
 import com.intellij.openapi.util.NlsContexts.TabTitle;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
@@ -39,9 +37,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SwingspectorExtension extends RunConfigurationExtension {
-
-    public static Key<Disposable> PROCESS_DISPOSER =
-            KeyWithDefaultValue.create("swag-process-disposer", createProcessDisposer());
 
     private final int port;
     private final String agentJar;
@@ -87,17 +82,18 @@ public class SwingspectorExtension extends RunConfigurationExtension {
             return;
         }
         CompletableFuture<ComponentInfoMBean> infoBeanFuture = new CompletableFuture<>();
+        Disposable disposer = createProcessDisposer();
         handler.putUserData(Util.INFO_BEAN_KEY, infoBeanFuture);
         handler.addProcessListener(
-                new SwagConnectListener(port, configuration.getProject(), infoBeanFuture));
-        openRootsWindow(configuration.getProject(), handler);
+                new SwagConnectListener(
+                        port, configuration.getProject(), infoBeanFuture, disposer));
+        openRootsWindow(configuration.getProject(), handler, disposer);
     }
 
-    private void openRootsWindow(Project project, ProcessHandler handler) {
+    private void openRootsWindow(Project project, ProcessHandler handler, Disposable disposer) {
         ToolWindow componentToolWindow =
                 ToolWindowManager.getInstance(project).getToolWindow("Swing Roots");
         ContentManager contentManager = componentToolWindow.getContentManager();
-        Disposable disposer = handler.getUserData(PROCESS_DISPOSER);
         SwingRoots roots =
                 new SwingRoots(
                         Objects.requireNonNull(handler.getUserData(Util.INFO_BEAN_KEY)),
