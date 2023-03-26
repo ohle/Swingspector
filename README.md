@@ -27,13 +27,13 @@ from that project.
 
 ![Demo](https://raw.githubusercontent.com/ohle/idea-swag/main/screenshots/Demo.gif)
 
-`Swingspector` adds a new type of run configuration ("SWAG Swing Application") to IDEA. It is mostly
-identical to the standard Java Application run configuration, but will instrument the application
-for use with the plugin.
+`Swingspector` adds a new option to run configurations of type "Application". This option will
+instrument the application for use with the plugin.
 
-Create a new run configuration of type "SWAG Swing Application" for your application, then run your
-application through it. `Swingspector` can now open a tool window with information about swing
-components of the running application.
+Select "Swingspector" from the "Modify Options" menu of any Application run configuration, activate
+the checkbox and choose a shortcut. Now, when running your Swing application through this
+configuration, it will react to the configured shortcut by opening a tool window in IDEA with 
+information about the Swing component under the mouse cursor.
 
 ### Navigation
 
@@ -41,8 +41,8 @@ There are two ways to open a tool window for a component:
 
 #### Using the hotkey
 
-The run configuration setup dialog includes a keyboard shortcut (default <kbd>F12</kbd>). This
-shortcut is installed in the application being run (so be sure to choose one that doesn't shadow an
+The run configuration setup dialog includes a keyboard shortcut (default <kbd>Ctrl</kbd>+<kbd>;</kbd>). 
+This shortcut is installed in the application being run (so be sure to choose one that doesn't shadow an
 important shortcut of the application itself).
 
 Position your mouse cursor over a component of interest and press the shortcut keys (with the
@@ -50,7 +50,7 @@ keyboard focus in your application) to open a window for that component.
 
 #### Using the hierarchy of the root windows
 
-In the Run tool window, there is an additional tab ("SWAG root windows") that shows a list of all
+The "Swing Roots" toolwindow is populated when running an application with Swingspector active, and contains
 the root windows (JFrames, Dialogs, …) that the application opened. Double-clicking one of those
 will open the Swing Hierarchy tool window, showing the tree of components within that window.
 Individual components can be opened from there.
