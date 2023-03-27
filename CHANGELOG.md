@@ -3,6 +3,7 @@
 # Swingspector Changelog
 
 ## [Unreleased]
+- Fix EDT violation
 
 ## [2.0.0]
 - Swingspector now plugs into regular Application RunConfigurations instead of providing a new type

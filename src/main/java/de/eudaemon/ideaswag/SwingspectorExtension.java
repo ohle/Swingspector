@@ -87,7 +87,8 @@ public class SwingspectorExtension extends RunConfigurationExtension {
         handler.addProcessListener(
                 new SwagConnectListener(
                         port, configuration.getProject(), infoBeanFuture, disposer));
-        openRootsWindow(configuration.getProject(), handler, disposer);
+        ApplicationManager.getApplication()
+                .invokeLater(() -> openRootsWindow(configuration.getProject(), handler, disposer));
     }
 
     private void openRootsWindow(Project project, ProcessHandler handler, Disposable disposer) {
