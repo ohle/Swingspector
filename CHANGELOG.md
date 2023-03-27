@@ -3,6 +3,8 @@
 # Swingspector Changelog
 
 ## [Unreleased]
+
+## [2.0.0]
 - Swingspector now plugs into regular Application RunConfigurations instead of providing a new type
 - Existing Swingspector or SWAG RunConfigurations are now invalid; please create Application RunConfigurations
   and enable Swingspector via "Modify Options" -> "Swing"
