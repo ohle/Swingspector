@@ -3,6 +3,8 @@
 # Swingspector Changelog
 
 ## [Unreleased]
+
+## [2.0.1]
 - Fix EDT violation
 
 ## [2.0.0]
