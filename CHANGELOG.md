@@ -3,6 +3,8 @@
 # Swingspector Changelog
 
 ## [Unreleased]
+
+## [2.0.2]
 - (hopefully) fix agent loading bug on Windows
 
 ## [2.0.1]
