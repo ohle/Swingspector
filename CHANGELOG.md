@@ -3,6 +3,7 @@
 # Swingspector Changelog
 
 ## [Unreleased]
+- (hopefully) fix agent loading bug on Windows
 
 ## [2.0.1]
 - Fix EDT violation
