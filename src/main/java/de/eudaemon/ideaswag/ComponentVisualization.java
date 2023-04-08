@@ -358,8 +358,12 @@ class ComponentVisualization extends JLayeredPane {
 
         @Override
         public Dimension getPreferredSize() {
-            return new Dimension(
-                    snapshot.getWidth() + RULER_SIZE, snapshot.getHeight() + RULER_SIZE);
+            if (snapshot != null) {
+                return new Dimension(
+                        snapshot.getWidth() + RULER_SIZE, snapshot.getHeight() + RULER_SIZE);
+            } else {
+                return new Dimension(RULER_SIZE, RULER_SIZE);
+            }
         }
 
         @Override

@@ -1,15 +1,19 @@
 package de.eudaemon.ideaswag;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import java.util.stream.Collectors;
 
+import java.awt.Dimension;
 import java.awt.Rectangle;
 
 import java.awt.geom.Point2D;
 
+import com.intellij.debugger.DebuggerManagerEx;
+import com.intellij.debugger.engine.DebugProcessImpl;
 import com.intellij.openapi.project.Project;
 
 import de.eudaemon.swag.ChildBounds;
@@ -18,12 +22,41 @@ import de.eudaemon.swag.ComponentInfoMBean;
 import de.eudaemon.swag.ComponentProperty;
 import de.eudaemon.swag.PlacementInfo;
 import de.eudaemon.swag.SerializableImage;
+import de.eudaemon.swag.SizeInfo;
 import de.eudaemon.swag.SizeInfos;
 
 public class RunningComponent {
     private final ComponentInfoMBean connectedBean;
     private final int componentId;
     private final Project project;
+
+    private final Cached<Collection<RunningComponent>> children =
+            new Cached<>(this::getChildrenInt, List.of());
+
+    private final Cached<SerializableImage> snapshot = new Cached<>(this::getSnapshotInt, null);
+
+    private static final SizeInfo NULL_SIZINFO = new SizeInfo(new Dimension(0, 0), false);
+    private static final SizeInfos NULL_SIZEINFOS =
+            new SizeInfos(new Dimension(0, 0), NULL_SIZINFO, NULL_SIZINFO, NULL_SIZINFO);
+
+    private final Cached<SizeInfos> sizeInfos = new Cached<>(this::getSizeInfosInt, NULL_SIZEINFOS);
+
+    private final Cached<RunningComponent> parent = new Cached<>(this::getParentInt, null);
+
+    private final Cached<ComponentDescription> description =
+            new Cached<>(
+                    this::getDescriptionInt,
+                    new ComponentDescription("unknown", "unknown", "unknown", "", ""));
+
+    private final Cached<Collection<ComponentProperty>> properties =
+            new Cached<>(this::getAllPropertiesInt, List.of());
+
+    private final Cached<PlacementInfo> placementInfo =
+            new Cached<>(
+                    this::getPlacementInfoInt,
+                    new PlacementInfo(null, -1, new StackTraceElement[] {}));
+
+    private final Cached<RunningComponent> root = new Cached<>(this::getRootInt, null);
 
     public RunningComponent(ComponentInfoMBean connectedBean_, int componentId_, Project project_) {
         connectedBean = connectedBean_;
@@ -43,32 +76,67 @@ public class RunningComponent {
     }
 
     public Collection<RunningComponent> getChildren() {
+        return getCached(children);
+    }
+
+    public SerializableImage getSnapshot() {
+        return getCached(snapshot);
+    }
+
+    public SizeInfos getSizeInfos() {
+        return getCached(sizeInfos);
+    }
+
+    public RunningComponent getParent() {
+        return getCached(parent);
+    }
+
+    public ComponentDescription getDescription() {
+        return getCached(description);
+    }
+
+    public Collection<ComponentProperty> getAllProperties() {
+        return getCached(properties);
+    }
+
+    public PlacementInfo getPlacementInfo() {
+        return getCached(placementInfo);
+    }
+
+    public RunningComponent getRoot() {
+        return getCached(root);
+    }
+
+    private Collection<RunningComponent> getChildrenInt() {
         return connectedBean.getChildren(componentId).stream()
                 .map(id -> new RunningComponent(connectedBean, id, project))
                 .collect(Collectors.toSet());
     }
 
-    public SerializableImage getSnapshot() {
+    private SerializableImage getSnapshotInt() {
         return connectedBean.getSnapshot(componentId);
     }
 
-    public SizeInfos getSizeInfos() {
+    private SizeInfos getSizeInfosInt() {
         return connectedBean.getSizeInfos(componentId);
     }
 
-    public RunningComponent getParent() {
+    private RunningComponent getParentInt() {
         return new RunningComponent(connectedBean, connectedBean.getParent(componentId), project);
     }
 
-    public ComponentDescription getDescription() {
+    private ComponentDescription getDescriptionInt() {
         return connectedBean.getDescription(componentId);
     }
 
-    public Collection<ComponentProperty> getAllProperties() {
+    private Collection<ComponentProperty> getAllPropertiesInt() {
         return connectedBean.getAllProperties(componentId);
     }
 
     public RunningComponent getComponentAt(Point2D pos) {
+        if (applicationIsStopped()) {
+            return null;
+        }
         Collection<ChildBounds> bounds = connectedBean.getVisibleChildrenBounds(componentId);
         return bounds.stream()
                 .filter(b -> b.bounds.contains(pos))
@@ -78,13 +146,16 @@ public class RunningComponent {
     }
 
     public Optional<Rectangle> getChildBounds(int childId) {
+        if (applicationIsStopped()) {
+            return Optional.empty();
+        }
         return connectedBean.getVisibleChildrenBounds(componentId).stream()
                 .filter(cb -> cb.childId == childId)
                 .findAny()
                 .map(cb -> cb.bounds);
     }
 
-    public PlacementInfo getPlacementInfo() {
+    private PlacementInfo getPlacementInfoInt() {
         return connectedBean.getPlacementInfo(componentId);
     }
 
@@ -96,7 +167,7 @@ public class RunningComponent {
         return componentId;
     }
 
-    public RunningComponent getRoot() {
+    private RunningComponent getRootInt() {
         return new RunningComponent(connectedBean, connectedBean.getRoot(componentId), project);
     }
 
@@ -112,6 +183,20 @@ public class RunningComponent {
         return componentId == that.componentId
                 && connectedBean.equals(that.connectedBean)
                 && project.equals(that.project);
+    }
+
+    private boolean applicationIsStopped() {
+        DebugProcessImpl debugProcess =
+                DebuggerManagerEx.getInstanceEx(getProject()).getContext().getDebugProcess();
+        return debugProcess != null && !debugProcess.getSession().isRunning();
+    }
+
+    private <T> T getCached(Cached<T> cached) {
+        if (applicationIsStopped()) {
+            return cached.getLastSeenValue();
+        } else {
+            return cached.get();
+        }
     }
 
     @Override
