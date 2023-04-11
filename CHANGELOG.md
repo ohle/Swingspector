@@ -3,6 +3,7 @@
 # Swingspector Changelog
 
 ## [Unreleased]
+- Fix some deadlock situations when the Application is unresponsive or stopped in debugger
 
 ## [2.0.2]
 - (hopefully) fix agent loading bug on Windows
