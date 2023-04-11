@@ -23,6 +23,7 @@ import com.intellij.openapi.actionSystem.ActionPlaces;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBList;
@@ -40,13 +41,21 @@ public class SwingRoots extends JPanel implements Refreshable {
     private final Project project;
     private final Disposable disposer;
 
+    private static final Logger LOG = Logger.getInstance(SwingRoots.class);
+
     public SwingRoots(
             CompletableFuture<ComponentInfoMBean> infoBean_,
             Project project_,
             Disposable disposer_) {
         project = project_;
         disposer = disposer_;
-        infoBean_.thenAcceptAsync(this::init, ApplicationManager.getApplication()::invokeLater);
+        infoBean_
+                .thenAcceptAsync(this::init, ApplicationManager.getApplication()::invokeLater)
+                .exceptionally(
+                        t -> {
+                            LOG.error(t);
+                            return null;
+                        });
         setLayout(new BorderLayout());
         AnAction actionGroup = ActionManager.getInstance().getAction("IdeaSWAG.RootsView");
         ActionToolbar toolBar =
