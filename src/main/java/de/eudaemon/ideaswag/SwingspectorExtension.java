@@ -82,11 +82,13 @@ public class SwingspectorExtension extends RunConfigurationExtension {
             return;
         }
         CompletableFuture<ComponentInfoMBean> infoBeanFuture = new CompletableFuture<>();
+        Double timeout =
+                configuration.getCopyableUserData(SwingspectorSettingsEditorFragment.TIMEOUT);
         Disposable disposer = createProcessDisposer();
         handler.putUserData(Util.INFO_BEAN_KEY, infoBeanFuture);
         handler.addProcessListener(
                 new SwagConnectListener(
-                        port, configuration.getProject(), infoBeanFuture, disposer));
+                        port, configuration.getProject(), infoBeanFuture, disposer, timeout));
         ApplicationManager.getApplication()
                 .invokeLater(() -> openRootsWindow(configuration.getProject(), handler, disposer));
     }
@@ -119,7 +121,7 @@ public class SwingspectorExtension extends RunConfigurationExtension {
                         "swingspector",
                         "Swingspector",
                         "Swing",
-                        new SwingspectorSettingsEditorFragment(),
+                        new SwingspectorSettingsEditorFragment(configuration.getProject()),
                         (o, c) -> c.resetFrom(o),
                         (o, c) -> c.applyTo(o),
                         SwingspectorExtension::isActive));
@@ -152,6 +154,12 @@ public class SwingspectorExtension extends RunConfigurationExtension {
         active.setAttribute(
                 "value", String.valueOf(isActive((ApplicationConfiguration) runConfiguration)));
         swingSpector.addContent(active);
+        Element timeout = new Element("timeout");
+        timeout.addContent(
+                String.valueOf(
+                        runConfiguration.getCopyableUserData(
+                                SwingspectorSettingsEditorFragment.TIMEOUT)));
+        swingSpector.addContent(timeout);
         element.addContent(swingSpector);
     }
 
@@ -175,6 +183,13 @@ public class SwingspectorExtension extends RunConfigurationExtension {
                 Boolean.parseBoolean(swingSpector.getChild("active").getAttributeValue("value"));
         runConfiguration.putCopyableUserData(SwingspectorSettingsEditorFragment.ACTIVE_KEY, active);
         runConfiguration.putCopyableUserData(SwingspectorSettingsEditorFragment.HOTKEY, keyStroke);
+        double timeout;
+        if (swingSpector.getChildText("timeout") != null) {
+            timeout = Double.parseDouble(swingSpector.getChildText("timeout"));
+        } else {
+            timeout = 5.0;
+        }
+        runConfiguration.putCopyableUserData(SwingspectorSettingsEditorFragment.TIMEOUT, timeout);
     }
 
     private int findFreePort() {

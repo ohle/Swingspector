@@ -26,19 +26,23 @@ class SwagConnectListener extends ProcessAdapter {
     boolean cancelled = false;
     boolean connected = false;
 
+    private static final int RETRY_DELAY_MS = 500;
     private final AtomicInteger tries = new AtomicInteger(0);
-    private final Timer retryTimer = new Timer(500, a -> tryToConnect());
+    private final Timer retryTimer = new Timer(RETRY_DELAY_MS, a -> tryToConnect());
     private Disposable disposer;
+    private final int maxRetries;
 
     public SwagConnectListener(
             int port_,
             Project project_,
             CompletableFuture<ComponentInfoMBean> infoBeanFuture_,
-            Disposable disposer_) {
+            Disposable disposer_,
+            double timeout) {
         port = port_;
         project = project_;
         infoBeanFuture = infoBeanFuture_;
         disposer = disposer_;
+        maxRetries = (int) (timeout * 1.0e3 / RETRY_DELAY_MS);
     }
 
     @Override
@@ -47,7 +51,7 @@ class SwagConnectListener extends ProcessAdapter {
     }
 
     private void tryToConnect() {
-        if (tries.getAndIncrement() > 10) {
+        if (tries.getAndIncrement() > maxRetries) {
             retryTimer.stop();
             LOG.error("Failed to connect");
         }
