@@ -31,10 +31,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
-import javax.swing.event.EventListenerList;
-
 import com.intellij.openapi.Disposable;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.colors.EditorColors;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.colors.EditorColorsScheme;
@@ -44,7 +41,6 @@ import com.intellij.util.ui.JBInsets;
 import com.intellij.util.ui.JBUI.Borders;
 
 import de.eudaemon.swag.SizeInfos;
-import org.jetbrains.annotations.NotNull;
 
 class ComponentVisualization extends JLayeredPane {
 
@@ -71,9 +67,7 @@ class ComponentVisualization extends JLayeredPane {
                     new float[] {2.0f, 5.0f},
                     0.0f);
     private final RunningComponent component;
-    private static final @NotNull Logger LOG = Logger.getInstance(ComponentVisualization.class);
 
-    private final EventListenerList listeners = new EventListenerList();
     private final View view;
     private final JLabel positionLabel;
     private final JLabel measurementLabel;
