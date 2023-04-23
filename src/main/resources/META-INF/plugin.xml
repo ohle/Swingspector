@@ -17,6 +17,8 @@
                     anchor="left" canCloseContents="true" icon="AllIcons.Hierarchy.Class" />
         <toolWindow factoryClass="de.eudaemon.ideaswag.RootsToolWindowFactory" id="Swing Roots"
                     anchor="left" canCloseContents="true" icon="AllIcons.Debugger.Frame"/>
+        <notificationGroup displayType="BALLOON" id="Swingspector Connection Errors"
+                           icon="AllIcons.General.BalloonError" />
 
     </extensions>
 

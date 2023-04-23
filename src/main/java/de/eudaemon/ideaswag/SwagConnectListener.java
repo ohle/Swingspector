@@ -1,13 +1,19 @@
 package de.eudaemon.ideaswag;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeoutException;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.Timer;
 
+import com.intellij.execution.impl.EditConfigurationsDialog;
 import com.intellij.execution.process.ProcessAdapter;
 import com.intellij.execution.process.ProcessEvent;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationAction;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -53,7 +59,17 @@ class SwagConnectListener extends ProcessAdapter {
     private void tryToConnect() {
         if (tries.getAndIncrement() > maxRetries) {
             retryTimer.stop();
-            LOG.error("Failed to connect");
+            Notification errorNotification =
+                    new Notification(
+                            "Swingspector Connection Errors",
+                            "Failed " + "to connect",
+                            "Timeout trying to connect to Swing Agent",
+                            NotificationType.ERROR);
+            errorNotification.addAction(
+                    NotificationAction.createSimple(
+                            "Edit Settings", () -> new EditConfigurationsDialog(project).show()));
+            Notifications.Bus.notify(errorNotification, project);
+            LOG.info("Failed to connect", new TimeoutException());
         }
         if (!cancelled && !connected) {
             ComponentInfoMBean infoBean =
