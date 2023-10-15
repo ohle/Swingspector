@@ -40,7 +40,7 @@ public class Util {
             sb.append(description.name).append(" (");
             hasPrefix = true;
         } else if (description.text != null) {
-            sb.append(StringUtils.abbreviate(description.text, 15)).append(" (");
+            sb.append(abbreviate(description.text, 15)).append(" (");
             hasPrefix = true;
         }
         sb.append(description.simpleClassName);
@@ -48,6 +48,14 @@ public class Util {
             sb.append((")"));
         }
         return sb.toString();
+    }
+
+    private static String abbreviate(String s, int maxLength) {
+        if (s.length() <= maxLength) {
+            return s;
+        } else {
+            return s.substring(0, maxLength - 3) + "...";
+        }
     }
 
     private static ToolWindow getTreeToolWindow(Project project) {
