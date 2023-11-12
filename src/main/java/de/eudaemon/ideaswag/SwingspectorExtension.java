@@ -11,6 +11,7 @@ import java.nio.file.Path;
 
 import javax.swing.KeyStroke;
 
+import com.intellij.execution.ExecutionException;
 import com.intellij.execution.RunConfigurationExtension;
 import com.intellij.execution.application.ApplicationConfiguration;
 import com.intellij.execution.configurations.JavaParameters;
@@ -47,10 +48,8 @@ public class SwingspectorExtension extends RunConfigurationExtension {
     }
 
     @Override
-    public <T extends RunConfigurationBase> void updateJavaParameters(
-            @NotNull T configuration,
-            @NotNull JavaParameters params,
-            RunnerSettings runnerSettings) {
+    public <T extends RunConfigurationBase<?>> void updateJavaParameters(@NotNull T configuration,
+            @NotNull JavaParameters params, @Nullable RunnerSettings runnerSettings) {
         if (!isApplicableFor(configuration)
                 || !isActive((ApplicationConfiguration) configuration)) {
             return;
