@@ -51,13 +51,10 @@ jobs:
 
       # Attempt to make some room to prevent "no more space on device" errors
       - name: Recover Diskspace
-        id: clear-space
-        shell: bash
-        run: |
-          df -h
-          sudo rm -rf "/usr/local/share/boost"
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-          df -h
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: false
+
 
       # Set environment variables
       - name: Export Properties
