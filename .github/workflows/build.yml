@@ -49,6 +49,16 @@ jobs:
           java-version: 20
           cache: gradle
 
+      # Attempt to make some room to prevent "no more space on device" errors
+      - name: Recover Diskspace
+        id: clear-space
+        shell: bash
+        run: |
+          df -h
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          df -h
+
       # Set environment variables
       - name: Export Properties
         id: properties
