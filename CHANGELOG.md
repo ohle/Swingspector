@@ -4,6 +4,7 @@
 
 ## [Unreleased]
 
+## [2.0.3]
 ### Added
 - Support for non-Application run configurations (e.g. gradle)
 - Connection timeouts are now configurable
