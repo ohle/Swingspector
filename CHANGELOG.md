@@ -3,9 +3,17 @@
 # Swingspector Changelog
 
 ## [Unreleased]
-- Fix some deadlock situations when the Application is unresponsive or stopped in debugger
-- Make connection timeout configurable; use balloon notification instead of exception in case of timeout
-- Make extension available for all run configuration types (e.g. gradle)
+
+### Added
+- Support for non-Application run configurations (e.g. gradle)
+- Connection timeouts are now configurable
+
+### Changed
+- When a connection times out, a balloon notification is shown (previously threw
+  exception)
+
+### Fixed
+- Fix some deadlock situations when the application is unresponsive or stopped in debugger
 
 ## [2.0.2]
 - (hopefully) fix agent loading bug on Windows
