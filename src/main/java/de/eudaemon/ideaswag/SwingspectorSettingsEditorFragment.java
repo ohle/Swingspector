@@ -13,6 +13,7 @@ import javax.swing.KeyStroke;
 import javax.swing.event.DocumentEvent;
 
 import com.intellij.execution.application.ApplicationConfiguration;
+import com.intellij.execution.configurations.RunConfigurationBase;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComponentValidator;
 import com.intellij.openapi.ui.LabeledComponent;
@@ -93,7 +94,7 @@ class SwingspectorSettingsEditorFragment extends JPanel {
                         });
     }
 
-    public void resetFrom(ApplicationConfiguration config) {
+    public void resetFrom(RunConfigurationBase<?> config) {
         Boolean active = config.getCopyableUserData(ACTIVE_KEY);
         KeyStroke hotKey = config.getCopyableUserData(HOTKEY);
         Double timeout = config.getCopyableUserData(TIMEOUT);
@@ -108,7 +109,7 @@ class SwingspectorSettingsEditorFragment extends JPanel {
         timeoutField.getComponent().setText(String.valueOf(timeout));
     }
 
-    public void applyTo(ApplicationConfiguration config) {
+    public void applyTo(RunConfigurationBase<?> config) {
         config.putCopyableUserData(ACTIVE_KEY, activeCheckbox.isSelected());
         config.putCopyableUserData(HOTKEY, shortcutField.getComponent().getKeyStroke());
         try {

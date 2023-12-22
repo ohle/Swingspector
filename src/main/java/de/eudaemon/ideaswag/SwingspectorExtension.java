@@ -51,7 +51,7 @@ public class SwingspectorExtension extends RunConfigurationExtension {
     public <T extends RunConfigurationBase<?>> void updateJavaParameters(@NotNull T configuration,
             @NotNull JavaParameters params, @Nullable RunnerSettings runnerSettings) {
         if (!isApplicableFor(configuration)
-                || !isActive((ApplicationConfiguration) configuration)) {
+                || !isActive(configuration)) {
             return;
         }
         KeyStroke hotKey =
@@ -77,7 +77,7 @@ public class SwingspectorExtension extends RunConfigurationExtension {
             @NotNull ProcessHandler handler,
             @Nullable RunnerSettings runnerSettings) {
         if (!isApplicableFor(configuration)
-                || !isActive((ApplicationConfiguration) configuration)) {
+                || !isActive(configuration)) {
             return;
         }
         CompletableFuture<ComponentInfoMBean> infoBeanFuture = new CompletableFuture<>();
@@ -109,7 +109,7 @@ public class SwingspectorExtension extends RunConfigurationExtension {
 
     @Override
     public boolean isApplicableFor(@NotNull RunConfigurationBase<?> configuration) {
-        return configuration instanceof ApplicationConfiguration;
+        return true;
     }
 
     @Override
@@ -151,7 +151,7 @@ public class SwingspectorExtension extends RunConfigurationExtension {
         swingSpector.addContent(keyStroke);
         Element active = new Element("active");
         active.setAttribute(
-                "value", String.valueOf(isActive((ApplicationConfiguration) runConfiguration)));
+                "value", String.valueOf(isActive(runConfiguration)));
         swingSpector.addContent(active);
         Element timeout = new Element("timeout");
         timeout.addContent(
@@ -205,7 +205,7 @@ public class SwingspectorExtension extends RunConfigurationExtension {
         return agentJarPath.toFile().getAbsolutePath();
     }
 
-    private static boolean isActive(ApplicationConfiguration config) {
+    private static boolean isActive(RunConfigurationBase<?> config) {
         Boolean active = config.getCopyableUserData(SwingspectorSettingsEditorFragment.ACTIVE_KEY);
         return active != null && active;
     }
