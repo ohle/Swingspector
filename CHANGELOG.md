@@ -5,6 +5,7 @@
 ## [Unreleased]
 - Fix some deadlock situations when the Application is unresponsive or stopped in debugger
 - Make connection timeout configurable; use balloon notification instead of exception in case of timeout
+- Make extension available for all run configuration types (e.g. gradle)
 
 ## [2.0.2]
 - (hopefully) fix agent loading bug on Windows
