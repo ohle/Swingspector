@@ -27,12 +27,13 @@ from that project.
 
 ![Demo](https://raw.githubusercontent.com/ohle/idea-swag/main/screenshots/Demo.gif)
 
-`Swingspector` adds a new option to run configurations of type "Application". This option will
+`Swingspector` adds a new option to run configurations. This option will
 instrument the application for use with the plugin.
 
-Select "Swingspector" from the "Modify Options" menu of any Application run configuration, activate
-the checkbox and choose a shortcut. Now, when running your Swing application through this
-configuration, it will react to the configured shortcut by opening a tool window in IDEA with 
+Select "Swingspector" from the "Modify Options" menu of any run configuration
+that starts a Swing application, activate the checkbox and choose a shortcut.
+Now, when running your Swing application through this configuration, it will
+react to the configured shortcut by opening a tool window in IDEA with
 information about the Swing component under the mouse cursor.
 
 ### Navigation
