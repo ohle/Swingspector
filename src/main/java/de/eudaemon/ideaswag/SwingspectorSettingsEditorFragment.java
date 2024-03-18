@@ -61,23 +61,20 @@ class SwingspectorSettingsEditorFragment extends JPanel {
         add(timeoutField);
         new ComponentValidator(project)
                 .withValidator(
-                        v -> {
+                        () -> {
                             String text = timeoutField.getComponent().getText();
                             try {
                                 double timeout = Double.parseDouble(text);
                                 if (timeout < 500.0e-3) {
-                                    v.updateInfo(
-                                            new ValidationInfo(
-                                                    "Timeout must be at least 0.5 seconds.",
-                                                    timeoutField.getComponent()));
+                                    return new ValidationInfo(
+                                            "Timeout must be at least 0.5 seconds.",
+                                            timeoutField.getComponent());
                                 } else {
-                                    v.updateInfo(null);
+                                    return null;
                                 }
                             } catch (NumberFormatException nfe) {
-                                v.updateInfo(
-                                        new ValidationInfo(
-                                                "Please enter a number",
-                                                timeoutField.getComponent()));
+                                return new ValidationInfo(
+                                        "Please enter a number", timeoutField.getComponent());
                             }
                         })
                 .installOn(timeoutField.getComponent());
