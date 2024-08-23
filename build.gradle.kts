@@ -71,6 +71,8 @@ tasks {
 
     patchPluginXml {
         version.set(properties("pluginVersion"))
+        // purely for listProductReleases
+        sinceBuild.set("203")
 
         // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
         pluginDescription.set(
