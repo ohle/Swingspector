@@ -3,6 +3,7 @@
     <id>de.eudaemon.ideaswag</id>
     <name>Swingspector</name>
     <vendor>Ohle Claussen</vendor>
+    <idea-version since-build="203"/>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
