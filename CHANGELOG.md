@@ -3,6 +3,8 @@
 # Swingspector Changelog
 
 ## [Unreleased]
+
+## [2.0.5]
 - Compatibility with IDEA 2024.2 (and up)
 
 ## [2.0.4]
