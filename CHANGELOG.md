@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+## [2.0.6]
+- Compatibility with JDK 21+
+
 ## [2.0.5]
 - Compatibility with IDEA 2024.2 (and up)
 
