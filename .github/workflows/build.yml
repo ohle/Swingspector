@@ -50,10 +50,10 @@ jobs:
           cache: gradle
 
       # Attempt to make some room to prevent "no more space on device" errors
-      - name: Recover Diskspace
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: false
+#      - name: Recover Diskspace
+#        uses: jlumbroso/free-disk-space@main
+#        with:
+#          tool-cache: false
 
 
       # Set environment variables
