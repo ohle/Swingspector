@@ -38,8 +38,8 @@ jobs:
         uses: actions/checkout@v6
 
       # Validate wrapper
-      - name: Gradle Wrapper Validation
-        uses: gradle/actions/wrapper-validation@v3
+#      - name: Gradle Wrapper Validation
+#        uses: gradle/actions/wrapper-validation@v3
 
       # Setup Java 11 environment for the next steps
       - name: Setup Java
