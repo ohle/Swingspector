@@ -35,7 +35,7 @@ jobs:
 
       # Check out current repository
       - name: Fetch Sources
-        uses: actions/checkout@4
+        uses: actions/checkout@v6
 
       # Validate wrapper
       - name: Gradle Wrapper Validation
