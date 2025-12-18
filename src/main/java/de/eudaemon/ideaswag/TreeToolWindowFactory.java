@@ -8,10 +8,5 @@ import org.jetbrains.annotations.NotNull;
 
 public class TreeToolWindowFactory implements ToolWindowFactory {
     @Override
-    public boolean isApplicable(@NotNull Project project) {
-        return ToolWindowFactory.super.isApplicable(project);
-    }
-
-    @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {}
 }
