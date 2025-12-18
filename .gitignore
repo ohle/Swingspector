@@ -1,5 +1,7 @@
 .gradle
 .idea
+.intellijPlatform
+.kotlin
 .qodana
 build
 chain.crt
