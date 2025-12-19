@@ -66,7 +66,7 @@ public final class ShortcutTextField extends ExtendableTextField {
     @Override
     protected void processKeyEvent(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        if (getFocusTraversalKeysEnabled() && e.getModifiers() == 0 && e.getModifiersEx() == 0) {
+        if (getFocusTraversalKeysEnabled() && e.getModifiersEx() == 0) {
             if (keyCode == KeyEvent.VK_ESCAPE
                     || (keyCode == KeyEvent.VK_ENTER && myKeyStroke != null)) {
                 super.processKeyEvent(e);

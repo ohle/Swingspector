@@ -8,8 +8,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.Timer;
 
 import com.intellij.execution.impl.EditConfigurationsDialog;
-import com.intellij.execution.process.ProcessAdapter;
 import com.intellij.execution.process.ProcessEvent;
+import com.intellij.execution.process.ProcessListener;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationAction;
 import com.intellij.notification.NotificationType;
@@ -23,7 +23,7 @@ import com.intellij.openapi.util.Disposer;
 import de.eudaemon.swag.ComponentInfoMBean;
 import org.jetbrains.annotations.NotNull;
 
-class SwagConnectListener extends ProcessAdapter {
+class SwagConnectListener implements ProcessListener {
 
     private static final Logger LOG = Logger.getInstance(SwagConnectListener.class);
     private final int port;
