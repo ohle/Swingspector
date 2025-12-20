@@ -4,6 +4,7 @@
 
 ## [Unreleased]
 - Fix layout info in placement description
+- More informative placement info for `GridBagLayout`
 
 ## [2.0.6]
 - Compatibility with JDK 21+

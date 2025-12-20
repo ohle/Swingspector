@@ -11,6 +11,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.GridBagConstraints;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -58,6 +59,9 @@ import de.eudaemon.swag.ComponentProperty;
 import de.eudaemon.swag.ComponentProperty.ListenerSet;
 import de.eudaemon.swag.PlacementInfo;
 import org.jetbrains.annotations.NotNull;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class ComponentInfoPanel extends JPanel implements Disposable, Refreshable {
 
@@ -172,12 +176,65 @@ public class ComponentInfoPanel extends JPanel implements Disposable, Refreshabl
                         + "\nat index "
                         + placementInfo.index
                         + "\nwith constraints "
-                        + placementInfo.constraints
+                        + prettyConstraints(placementInfo.constraints)
                         + ":\n";
         return prelude
                 + Arrays.stream(stackTrace)
                         .map(StackTraceElement::toString)
                         .collect(Collectors.joining("\n     ", "     ", ""));
+    }
+
+    private String prettyConstraints(Object constraints) {
+        if (constraints instanceof GridBagConstraints gbc) {
+            return new ToStringBuilder(gbc, ToStringStyle.NO_CLASS_NAME_STYLE)
+                    .append("gridx", gbc.gridx)
+                    .append("gridy", gbc.gridy)
+                    .append("gridwidth", gbc.gridwidth)
+                    .append("gridheight", gbc.gridheight)
+                    .append("fill", describeGridBagFill(gbc.fill))
+                    .append("ipadx", gbc.ipadx)
+                    .append("ipady", gbc.ipady)
+                    .append("insets", gbc.insets)
+                    .append("anchor", describeGridBagAnchor(gbc.anchor))
+                    .append("weightx", gbc.weightx)
+                    .append("weighty", gbc.weighty)
+                    .toString();
+        } else {
+            return constraints.toString();
+        }
+    }
+
+    private String describeGridBagAnchor(int anchor) {
+        return switch (anchor) {
+            case GridBagConstraints.CENTER -> "CENTER";
+            case GridBagConstraints.PAGE_START -> "PAGE_START";
+            case GridBagConstraints.PAGE_END -> "PAGE_END";
+            case GridBagConstraints.LINE_START -> "LINE_START";
+            case GridBagConstraints.LINE_END -> "LINE_END";
+            case GridBagConstraints.FIRST_LINE_START -> "FIRST_LINE_START";
+            case GridBagConstraints.FIRST_LINE_END -> "FIRST_LINE_END";
+            case GridBagConstraints.LAST_LINE_START -> "LAST_LINE_START";
+            case GridBagConstraints.LAST_LINE_END -> "LAST_LINE_END";
+            case GridBagConstraints.NORTHWEST -> "NORTHWEST";
+            case GridBagConstraints.NORTH-> "NORTH";
+            case GridBagConstraints.NORTHEAST -> "NORTHEAST";
+            case GridBagConstraints.WEST-> "WEST";
+            case GridBagConstraints.EAST-> "EAST";
+            case GridBagConstraints.SOUTHWEST -> "SOUTHWEST";
+            case GridBagConstraints.SOUTH-> "SOUTH";
+            case GridBagConstraints.SOUTHEAST -> "SOUTHEAST";
+            default -> "Unknown (%d)".formatted(anchor);
+        };
+    }
+
+    private String describeGridBagFill(int fill) {
+        return switch (fill) {
+            case GridBagConstraints.NONE -> "NONE";
+            case GridBagConstraints.HORIZONTAL ->  "HORIZONTAL";
+            case GridBagConstraints.VERTICAL ->  "VERTICAL";
+            case GridBagConstraints.BOTH ->  "BOTH";
+            default -> "Unknown (%d)".formatted(fill);
+        };
     }
 
     public RunningComponent getRunningComponent() {
