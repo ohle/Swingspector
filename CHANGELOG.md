@@ -5,6 +5,7 @@
 ## [Unreleased]
 - Fix layout info in placement description
 - More informative placement info for `GridBagLayout`
+- Show layout managers in tree view
 
 ## [2.0.6]
 - Compatibility with JDK 21+

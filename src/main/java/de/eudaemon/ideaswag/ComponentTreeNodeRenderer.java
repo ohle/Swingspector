@@ -23,8 +23,13 @@ public class ComponentTreeNodeRenderer extends DefaultTreeCellRenderer {
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
         try {
             ComponentDescription description = node.getComponent().getDescription();
-            setText(Util.generateTitle(description));
+            String title = Util.generateTitle(description);
             setIcon(IdeaSwagIcons.fromDescription(description));
+            StringBuilder titleBuilder = new StringBuilder(title);
+            node.getComponent().getProperty("layoutManagerClassName").ifPresent(layout -> {
+                titleBuilder.append(" (").append(layout.valueDescription).append(")");
+            });
+            setText(titleBuilder.toString());
         } catch (Throwable ignored) {
             // happens while removing tree on dispose, when connection is already down
         }
