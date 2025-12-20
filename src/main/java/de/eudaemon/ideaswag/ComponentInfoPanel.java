@@ -164,9 +164,7 @@ public class ComponentInfoPanel extends JPanel implements Disposable, Refreshabl
         RunningComponent parent = component.getParent();
 
         String layoutDescription =
-                parent.getAllProperties().stream()
-                        .filter(p -> "layout".equals(p.key))
-                        .findAny()
+                parent.getProperty("layout")
                         .map(l -> " (Layout " + l.valueDescription + ")")
                         .orElse("null");
         String prelude =
