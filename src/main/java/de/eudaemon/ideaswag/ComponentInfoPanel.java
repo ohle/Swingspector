@@ -88,7 +88,7 @@ public class ComponentInfoPanel extends JPanel implements Disposable, Refreshabl
 
     @Override
     public void refresh() {
-        removeAll() /**/;
+        removeAll();
         JBSplitter mainSplitter = new JBSplitter(SPLIT_PROPORTION_KEY, .7f);
         JBSplitter splitter = new JBSplitter(RIGHT_SPLIT_PROPORTION_KEY, .5f);
         splitter.setFirstComponent(createPlacementPanel());
@@ -112,7 +112,6 @@ public class ComponentInfoPanel extends JPanel implements Disposable, Refreshabl
         Disposer.register(this, consoleView);
         consoleView.scrollTo(0);
         panel.add(console, BorderLayout.CENTER);
-        AnAction actionGroup = ActionManager.getInstance().getAction("IdeaSWAG.ComponentView");
         ActionToolbar toolBar =
                 ActionManager.getInstance()
                         .createActionToolbar(
