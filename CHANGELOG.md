@@ -3,6 +3,7 @@
 # Swingspector Changelog
 
 ## [Unreleased]
+- Fix layout info in placement description
 
 ## [2.0.6]
 - Compatibility with JDK 21+
