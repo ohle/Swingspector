@@ -7,7 +7,8 @@
 ## Summary
 
 <!-- Plugin description -->
-`Swingspector` is a plugin for Intellij IDEA that allows to analyze Java Swing components in a running
+`Swingspector` is a plugin for Intellij IDEA that allows to analyze Java Swing components in a
+running
 application.
 
 It is heavily inspired by the
@@ -42,8 +43,10 @@ There are two ways to open a tool window for a component:
 
 #### Using the hotkey
 
-The run configuration setup dialog includes a keyboard shortcut (default <kbd>Ctrl</kbd>+<kbd>;</kbd>). 
-This shortcut is installed in the application being run (so be sure to choose one that doesn't shadow an
+The run configuration setup dialog includes a keyboard shortcut (default <kbd>
+Ctrl</kbd>+<kbd>;</kbd>).
+This shortcut is installed in the application being run (so be sure to choose one that doesn't
+shadow an
 important shortcut of the application itself).
 
 Position your mouse cursor over a component of interest and press the shortcut keys (with the
@@ -51,7 +54,8 @@ keyboard focus in your application) to open a window for that component.
 
 #### Using the hierarchy of the root windows
 
-The "Swing Roots" toolwindow is populated when running an application with Swingspector active, and contains
+The "Swing Roots" toolwindow is populated when running an application with Swingspector active, and
+contains
 the root windows (JFrames, Dialogs, …) that the application opened. Double-clicking one of those
 will open the Swing Hierarchy tool window, showing the tree of components within that window.
 Individual components can be opened from there.
@@ -80,6 +84,24 @@ parent.
 
 Immediate child components can be opened by double-clicking. When hovering over a child component,
 its preferred, minimum, and maximum size are plotted, and its name is displayed in the overlay.
+
+### The Swing Hierarchy tree view
+
+The "Swing Hierarchy" tool window shows the component tree of a root window; it can be opened either
+from the roots tool window or a component tool window.
+
+Each node of the tree will display its name (if set) and Component subclass. For containers
+(i.e. non-leaf nodes), the layout class name will be shown in brackets.
+
+The width and height toggle buttons in the toolbar will add information about the sizes:
+
+- Minimum size in blue
+- Actual size
+- Preferred size in green
+- Maximum size in red
+
+If a size is set to a fixed value (via `set{Minimum,Maximum,Preferred}Size()`), it will be
+underlined.
 
 ## Installation
 

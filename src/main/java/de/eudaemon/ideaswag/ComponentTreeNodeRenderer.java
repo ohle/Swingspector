@@ -129,7 +129,11 @@ public class ComponentTreeNodeRenderer extends DefaultTreeCellRenderer {
                     case WIDTH -> si.size.width;
                     case HEIGHT -> si.size.height;
                 };
-        return "<font color='%s'>%s%d%s</font>"
-                .formatted(Util.hexColor(color), si.set ? "<u>" : "", size, si.set ? "</u>" : "");
+        return "<font color='%s'>%s%s%s</font>"
+                .formatted(
+                        Util.hexColor(color),
+                        si.set ? "<u>" : "",
+                        size == Integer.MAX_VALUE ? "∞" : size,
+                        si.set ? "</u>" : "");
     }
 }
