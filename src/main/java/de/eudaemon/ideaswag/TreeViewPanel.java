@@ -1,18 +1,5 @@
 package de.eudaemon.ideaswag;
 
-import java.util.Optional;
-
-import java.awt.BorderLayout;
-
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-import javax.swing.JPanel;
-
-import javax.swing.tree.TreeSelectionModel;
-
 import com.intellij.icons.AllIcons.Actions;
 import com.intellij.icons.AllIcons.General;
 import com.intellij.openapi.Disposable;
@@ -26,12 +13,25 @@ import com.intellij.ui.tree.TreeVisitor.Action;
 import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.ui.tree.TreeUtil;
 
+import icons.IdeaSwagIcons;
+
+import java.awt.BorderLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Optional;
+
+import javax.swing.JPanel;
+import javax.swing.tree.TreeSelectionModel;
+
 public class TreeViewPanel extends JPanel implements Refreshable {
 
     private final RunningComponent root;
     private Tree tree;
     private final Disposable disposer;
     private boolean autoLocateOn = false;
+    private ComponentTreeNodeRenderer cellRenderer = new ComponentTreeNodeRenderer(false, false);
 
     public TreeViewPanel(RunningComponent component_, Disposable disposer_) {
         root = component_;
@@ -44,7 +44,7 @@ public class TreeViewPanel extends JPanel implements Refreshable {
         removeAll();
         ComponentTreeNode rootNode = new ComponentTreeNode(root);
         tree = new Tree(rootNode);
-        tree.setCellRenderer(new ComponentTreeNodeRenderer());
+        tree.setCellRenderer(cellRenderer);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.addTreeSelectionListener(e -> autoLocate());
         setLayout(new BorderLayout());
@@ -102,7 +102,28 @@ public class TreeViewPanel extends JPanel implements Refreshable {
                         .text("Automatically Open Selected Component")
                         .icon(General.AutoscrollToSource)
                         .buildToggle(this::isAutoLocateOn, this::setAutoLocate));
+        group.addSeparator();
+        group.add(
+                Util.actionBuilder()
+                        .description("Show widths")
+                        .icon(IdeaSwagIcons.Width)
+                        .buildToggle(cellRenderer::isShowWidths, this::setShowWidths));
+        group.add(
+                Util.actionBuilder()
+                        .description("Show heights")
+                        .icon(IdeaSwagIcons.Height)
+                        .buildToggle(cellRenderer::isShowHeights, this::setShowHeights));
         return group;
+    }
+
+    private void setShowWidths(boolean show) {
+        cellRenderer.setShowWidths(show);
+        repaint();
+    }
+
+    private void setShowHeights(boolean show) {
+        cellRenderer.setShowHeights(show);
+        repaint();
     }
 
     private void autoLocate() {

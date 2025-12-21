@@ -1,7 +1,15 @@
 package de.eudaemon.ideaswag;
 
-import java.util.Objects;
-import java.util.Optional;
+import com.intellij.openapi.Disposable;
+import com.intellij.openapi.editor.colors.EditorColors;
+import com.intellij.openapi.editor.colors.EditorColorsManager;
+import com.intellij.openapi.editor.colors.EditorColorsScheme;
+import com.intellij.ui.Gray;
+import com.intellij.ui.components.JBScrollPane;
+import com.intellij.util.ui.JBInsets;
+import com.intellij.util.ui.JBUI.Borders;
+
+import de.eudaemon.swag.SizeInfos;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -13,34 +21,21 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
-
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-
 import java.awt.image.BufferedImage;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-
-import com.intellij.openapi.Disposable;
-import com.intellij.openapi.editor.colors.EditorColors;
-import com.intellij.openapi.editor.colors.EditorColorsManager;
-import com.intellij.openapi.editor.colors.EditorColorsScheme;
-import com.intellij.ui.Gray;
-import com.intellij.ui.components.JBScrollPane;
-import com.intellij.util.ui.JBInsets;
-import com.intellij.util.ui.JBUI.Borders;
-
-import de.eudaemon.swag.SizeInfos;
 
 class ComponentVisualization extends JLayeredPane {
 
@@ -236,7 +231,7 @@ class ComponentVisualization extends JLayeredPane {
         }
 
         private void paintSizeRectangles(Graphics2D g2d) {
-            g2d.setColor(ComponentInfoPanel.MAX_SIZE_COLOR);
+            g2d.setColor(Util.MAX_SIZE_COLOR);
             RunningComponent c;
             int x, y;
             if (componentUnderMouse == null) {
@@ -267,9 +262,9 @@ class ComponentVisualization extends JLayeredPane {
                 drawRect(x, y, sizing.maximumSize.size.width, sizing.maximumSize.size.height, g2d);
             }
             g2d.setStroke(NORMAL_STROKE);
-            g2d.setColor(ComponentInfoPanel.PREF_SIZE_COLOR);
+            g2d.setColor(Util.PREF_SIZE_COLOR);
             drawRect(x, y, sizing.preferredSize.size.width, sizing.preferredSize.size.height, g2d);
-            g2d.setColor(ComponentInfoPanel.MIN_SIZE_COLOR);
+            g2d.setColor(Util.MIN_SIZE_COLOR);
             drawRect(x, y, sizing.minimumSize.size.width, sizing.minimumSize.size.height, g2d);
         }
 

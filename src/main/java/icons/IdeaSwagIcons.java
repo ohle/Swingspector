@@ -1,11 +1,11 @@
 package icons;
 
-import javax.swing.Icon;
-
 import com.intellij.icons.AllIcons.Actions;
 import com.intellij.openapi.util.IconLoader;
 
 import de.eudaemon.swag.ComponentDescription;
+
+import javax.swing.Icon;
 
 public interface IdeaSwagIcons {
     Icon Button = IconLoader.getIcon("/icons/button.svg", IdeaSwagIcons.class);
@@ -36,6 +36,8 @@ public interface IdeaSwagIcons {
     Icon Tree = IconLoader.getIcon("/icons/tree.svg", IdeaSwagIcons.class);
     Icon Unknown = IconLoader.getIcon("/icons/unknown.svg", IdeaSwagIcons.class);
     Icon Window = Actions.MoveToWindow;
+    Icon Width = IconLoader.getIcon("/icons/width.svg", IdeaSwagIcons.class);
+    Icon Height = IconLoader.getIcon("/icons/height.svg", IdeaSwagIcons.class);
 
     static Icon fromDescription(ComponentDescription description) {
         switch (description.iconKey) {

@@ -201,7 +201,7 @@ public class SwingspectorExtension extends RunConfigurationExtension {
 
     private String findAgentJar() {
         Path agentJarPath =
-                Path.of(PathManager.getPluginsPath(), "Swingspector", "lib", "swag-1.2.3.jar");
+                Path.of(PathManager.getPluginsPath(), "Swingspector", "lib", "swag-1.2.4.jar");
         return agentJarPath.toFile().getAbsolutePath();
     }
 

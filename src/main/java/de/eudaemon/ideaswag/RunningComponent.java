@@ -99,6 +99,11 @@ public class RunningComponent {
         return getCached(properties);
     }
 
+    public Optional<ComponentProperty> getProperty(String key) {
+        return getAllProperties().stream()
+                .filter(p -> p.key.equals(key)).findAny();
+    }
+
     public PlacementInfo getPlacementInfo() {
         return getCached(placementInfo);
     }
