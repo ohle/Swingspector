@@ -4,10 +4,12 @@
 
 ## [Unreleased]
 
+## [2.1.0] - 2025-12-21
+
 - Fix layout info in placement description
 - More informative placement info for `GridBagLayout`
 - Show layout managers in tree view
-- Optionally show min/max/preferred/optional width and height in tree view
+- Optionally show min/max/preferred/actual width and height in tree view
 
 ## [2.0.6]
 
@@ -100,7 +102,7 @@
 - Improved readme
 - Logo
 
-## 0.1.0
+## [0.1.0]
 
 ### Added
 
@@ -111,3 +113,21 @@
     - Various property values
     - Listeners with (limited) navigation
 - Tree view of component hierarchy for root windows of the running application
+
+[Unreleased]: https://github.com/ohle/Swingspector/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/ohle/Swingspector/compare/v2.0.6...v2.1.0
+[2.0.6]: https://github.com/ohle/Swingspector/compare/v2.0.5...v2.0.6
+[2.0.5]: https://github.com/ohle/Swingspector/compare/v2.0.4...v2.0.5
+[2.0.4]: https://github.com/ohle/Swingspector/compare/v2.0.3...v2.0.4
+[2.0.3]: https://github.com/ohle/Swingspector/compare/v2.0.2...v2.0.3
+[2.0.2]: https://github.com/ohle/Swingspector/compare/v2.0.1...v2.0.2
+[2.0.1]: https://github.com/ohle/Swingspector/compare/v2.0.0...v2.0.1
+[2.0.0]: https://github.com/ohle/Swingspector/compare/v1.1.0...v2.0.0
+[1.1.0]: https://github.com/ohle/Swingspector/compare/v1.0.4...v1.1.0
+[1.0.4]: https://github.com/ohle/Swingspector/compare/v1.0.3...v1.0.4
+[1.0.3]: https://github.com/ohle/Swingspector/compare/v1.0.2...v1.0.3
+[1.0.2]: https://github.com/ohle/Swingspector/compare/v1.0.1...v1.0.2
+[1.0.1]: https://github.com/ohle/Swingspector/compare/v1.0.0...v1.0.1
+[1.0.0]: https://github.com/ohle/Swingspector/compare/v0.1.1...v1.0.0
+[0.1.1]: https://github.com/ohle/Swingspector/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/ohle/Swingspector/commits/v0.1.0
