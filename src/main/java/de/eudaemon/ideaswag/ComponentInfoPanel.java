@@ -1,31 +1,5 @@
 package de.eudaemon.ideaswag;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import java.util.stream.Collectors;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.GridBagConstraints;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-
-import javax.swing.border.EmptyBorder;
-
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
-
 import com.intellij.execution.filters.TextConsoleBuilder;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
@@ -58,10 +32,32 @@ import com.intellij.util.ui.JBInsets;
 import de.eudaemon.swag.ComponentProperty;
 import de.eudaemon.swag.ComponentProperty.ListenerSet;
 import de.eudaemon.swag.PlacementInfo;
-import org.jetbrains.annotations.NotNull;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jetbrains.annotations.NotNull;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.GridBagConstraints;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 
 public class ComponentInfoPanel extends JPanel implements Disposable, Refreshable {
 
@@ -69,10 +65,6 @@ public class ComponentInfoPanel extends JPanel implements Disposable, Refreshabl
             "de.eudaemon.idea-swag.component-info-panel.main-split-proportion";
     private static final String RIGHT_SPLIT_PROPORTION_KEY =
             "de.eudaemon.idea-swag.component-info-panel.right-split-proportion";
-
-    static final Color MIN_SIZE_COLOR = new Color(0x268bd2);
-    static final Color PREF_SIZE_COLOR = new Color(0x859900);
-    static final Color MAX_SIZE_COLOR = new Color(0xd33682);
 
     private final RunningComponent component;
     private final Project project;
@@ -214,12 +206,12 @@ public class ComponentInfoPanel extends JPanel implements Disposable, Refreshabl
             case GridBagConstraints.LAST_LINE_START -> "LAST_LINE_START";
             case GridBagConstraints.LAST_LINE_END -> "LAST_LINE_END";
             case GridBagConstraints.NORTHWEST -> "NORTHWEST";
-            case GridBagConstraints.NORTH-> "NORTH";
+            case GridBagConstraints.NORTH -> "NORTH";
             case GridBagConstraints.NORTHEAST -> "NORTHEAST";
-            case GridBagConstraints.WEST-> "WEST";
-            case GridBagConstraints.EAST-> "EAST";
+            case GridBagConstraints.WEST -> "WEST";
+            case GridBagConstraints.EAST -> "EAST";
             case GridBagConstraints.SOUTHWEST -> "SOUTHWEST";
-            case GridBagConstraints.SOUTH-> "SOUTH";
+            case GridBagConstraints.SOUTH -> "SOUTH";
             case GridBagConstraints.SOUTHEAST -> "SOUTHEAST";
             default -> "Unknown (%d)".formatted(anchor);
         };
@@ -228,9 +220,9 @@ public class ComponentInfoPanel extends JPanel implements Disposable, Refreshabl
     private String describeGridBagFill(int fill) {
         return switch (fill) {
             case GridBagConstraints.NONE -> "NONE";
-            case GridBagConstraints.HORIZONTAL ->  "HORIZONTAL";
-            case GridBagConstraints.VERTICAL ->  "VERTICAL";
-            case GridBagConstraints.BOTH ->  "BOTH";
+            case GridBagConstraints.HORIZONTAL -> "HORIZONTAL";
+            case GridBagConstraints.VERTICAL -> "VERTICAL";
+            case GridBagConstraints.BOTH -> "BOTH";
             default -> "Unknown (%d)".formatted(fill);
         };
     }

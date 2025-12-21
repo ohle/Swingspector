@@ -1,5 +1,11 @@
 package de.eudaemon.ideaswag;
 
+import com.intellij.icons.AllIcons.Actions;
+import com.intellij.openapi.Disposable;
+import com.intellij.util.ui.JBUI;
+
+import de.eudaemon.swag.SizeInfos;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -13,12 +19,6 @@ import java.awt.RenderingHints;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import com.intellij.icons.AllIcons.Actions;
-import com.intellij.openapi.Disposable;
-import com.intellij.util.ui.JBUI;
-
-import de.eudaemon.swag.SizeInfos;
 
 class ComponentAppearancePanel extends JPanel {
 
@@ -61,7 +61,7 @@ class ComponentAppearancePanel extends JPanel {
         panel.add(new JLabel("minimum"), c);
         c.gridx = GridBagConstraints.RELATIVE;
         addDimLabel(panel, sizeInfos.minimumSize.size, c);
-        addCircle(panel, ComponentInfoPanel.MIN_SIZE_COLOR, c);
+        addCircle(panel, Util.MIN_SIZE_COLOR, c);
         if (sizeInfos.minimumSize.set) {
             panel.add(new JLabel(Actions.PinTab), c);
         }
@@ -70,7 +70,7 @@ class ComponentAppearancePanel extends JPanel {
         panel.add(new JLabel("preferred"), c);
         c.gridx = GridBagConstraints.RELATIVE;
         addDimLabel(panel, sizeInfos.preferredSize.size, c);
-        addCircle(panel, ComponentInfoPanel.PREF_SIZE_COLOR, c);
+        addCircle(panel, Util.PREF_SIZE_COLOR, c);
         if (sizeInfos.preferredSize.set) {
             panel.add(new JLabel(Actions.PinTab), c);
         }
@@ -79,7 +79,7 @@ class ComponentAppearancePanel extends JPanel {
         panel.add(new JLabel("maximum"), c);
         c.gridx = GridBagConstraints.RELATIVE;
         addDimLabel(panel, sizeInfos.maximumSize.size, c);
-        addCircle(panel, ComponentInfoPanel.MAX_SIZE_COLOR, c);
+        addCircle(panel, Util.MAX_SIZE_COLOR, c);
         if (sizeInfos.maximumSize.set) {
             panel.add(new JLabel(Actions.PinTab), c);
         }

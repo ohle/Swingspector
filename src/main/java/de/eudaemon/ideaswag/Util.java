@@ -1,18 +1,5 @@
 package de.eudaemon.ideaswag;
 
-import java.util.Objects;
-import java.util.Optional;
-
-import java.util.concurrent.CompletableFuture;
-
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import javax.swing.Icon;
-import javax.swing.JComponent;
-
-import org.apache.commons.lang.StringUtils;
-
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -22,16 +9,36 @@ import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.ui.JBColor;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
 
 import de.eudaemon.swag.ComponentDescription;
 import de.eudaemon.swag.ComponentInfoMBean;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.awt.Color;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import javax.swing.Icon;
+import javax.swing.JComponent;
 
 public class Util {
     public static final Key<CompletableFuture<ComponentInfoMBean>> INFO_BEAN_KEY =
             Key.create("de.eudaemon.ideaswag.info-bean");
+
+    static final JBColor MIN_SIZE_COLOR = new JBColor(new Color(0x268bd2), new Color(0x268bd2));
+    static final JBColor PREF_SIZE_COLOR = new JBColor(new Color(0x859900), new Color(0x859900));
+    static final JBColor MAX_SIZE_COLOR = new JBColor(new Color(0xd33682), new Color(0xd33682));
+
+    static String hexColor(Color color) {
+        return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+    }
 
     public static String generateTitle(ComponentDescription description) {
         StringBuilder sb = new StringBuilder();
@@ -204,7 +211,7 @@ public class Util {
         }
 
         public ToggleAction buildToggle(Supplier<Boolean> get, Consumer<Boolean> set) {
-            return new ToggleAction() {
+            return new ToggleAction(text, description, icon) {
                 @Override
                 public boolean isSelected(@NotNull AnActionEvent e) {
                     return get.get();
