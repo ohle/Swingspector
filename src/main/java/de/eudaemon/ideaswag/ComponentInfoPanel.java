@@ -46,6 +46,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.swing.BoxLayout;
@@ -190,7 +191,7 @@ public class ComponentInfoPanel extends JPanel implements Disposable, Refreshabl
                     .append("weighty", gbc.weighty)
                     .toString();
         } else {
-            return constraints.toString();
+            return Objects.toString(constraints);
         }
     }
 
