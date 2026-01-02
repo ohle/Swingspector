@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [2.1.1] - 2026-01-02
+
+- Fix NPE for containers with `null` constraints
+
 ## [2.1.0] - 2025-12-21
 
 - Fix layout info in placement description
@@ -114,7 +118,8 @@
     - Listeners with (limited) navigation
 - Tree view of component hierarchy for root windows of the running application
 
-[Unreleased]: https://github.com/ohle/Swingspector/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/ohle/Swingspector/compare/v2.1.1...HEAD
+[2.1.1]: https://github.com/ohle/Swingspector/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/ohle/Swingspector/compare/v2.0.6...v2.1.0
 [2.0.6]: https://github.com/ohle/Swingspector/compare/v2.0.5...v2.0.6
 [2.0.5]: https://github.com/ohle/Swingspector/compare/v2.0.4...v2.0.5
