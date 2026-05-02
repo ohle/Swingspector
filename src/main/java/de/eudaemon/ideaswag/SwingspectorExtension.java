@@ -1,19 +1,6 @@
 package de.eudaemon.ideaswag;
 
-import java.util.List;
-import java.util.Objects;
-
-import java.util.concurrent.CompletableFuture;
-
-import java.io.IOException;
-
-import java.nio.file.Path;
-
-import javax.swing.KeyStroke;
-
-import com.intellij.execution.ExecutionException;
 import com.intellij.execution.RunConfigurationExtension;
-import com.intellij.execution.application.ApplicationConfiguration;
 import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.configurations.ParametersList;
 import com.intellij.execution.configurations.RunConfigurationBase;
@@ -33,9 +20,18 @@ import com.intellij.ui.content.ContentManager;
 import com.intellij.util.net.NetUtils;
 
 import de.eudaemon.swag.ComponentInfoMBean;
+
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+
+import javax.swing.KeyStroke;
 
 public class SwingspectorExtension extends RunConfigurationExtension {
 
